@@ -36,15 +36,15 @@ class Shell(Formatter):
 
         file_str = StringIO.StringIO()
 
-        for y in range(0, height - 1, 2):
+        yrange = height if height % 2 == 0 else height - 1
+        for y in range(0, yrange, 2):
             for x in range(0, width):
                 file_str.write(self.colorcode(pixels[off(x, y)], pixels[off(x, y + 1)]))
             file_str.write(chr(27) + u"[0m\n")
-        if height % 2 == 0:
-            y = height - 1
+        if height % 2 != 0:
             for x in range(0, width):
-                file_str.write(self.colorcode(pixels[off(x, y)], (0, 0, 0)))
-        file_str.write(chr(27) + u"[0m\n")
+                file_str.write(self.colorcode(pixels[off(x, height - 1)], (0, 0, 0)))
+            file_str.write(chr(27) + u"[0m\n")
         return file_str.getvalue()
 
 
