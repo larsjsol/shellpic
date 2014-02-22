@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8; mode: Python -*-
+#
+#
+# Lars Jørgen Solberg <supersolberg@gmail.com> 2014
+#
+import argparse
+import Image
+
+import shellpic
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("image")
+    args = parser.parse_args()
+
+    formatter = shellpic.Shell8bit()
+
+    img = Image.open(args.image)
+    img = shellpic.scale(img, *formatter.dimentions())
+    
+    print formatter.format(img)
