@@ -10,13 +10,20 @@ from shellpic.formatter import Formatter
 import os
 import StringIO
 
-
-class Shell8bit(Formatter):
+class Shell(Formatter):
     def __init__(self):
-        super(Shell8bit, self).__init__()
+        super(Shell, self).__init__()
+
+    @staticmethod
+    def dimentions():
+        rows, columns = os.popen('stty size', 'r').read().split()
+        return (int(columns), int(rows))
+
+    @classmethod
+    def colorcode(cls, bgcolor, fgcolor):
+        raise NotImplementedError()
 
     def format(self, image):
-
         def off(x, y):
             """ the string offset for a coordinate """
             return (y * width) + x
@@ -31,20 +38,24 @@ class Shell8bit(Formatter):
 
         for y in range(0, height - 1, 2):
             for x in range(0, width):
-                file_str.write(u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27),
-                                                                 Shell8bit.color(*pixels[off(x, y)]),
-                                                                 Shell8bit.color(*pixels[off(x, y + 1)]),
-                                                                 chr(8)))
+                file_str.write(self.colorcode(pixels[off(x, y)], pixels[off(x, y + 1)]))
             file_str.write(chr(27) + u"[0m\n")
         if height % 2 == 0:
             y = height - 1
             for x in range(0, width):
-                file_str.write(u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27),
-                                                                 Shell8bit.color(*pixels[off(x, y)]),
-                                                                 Shell8bit.color(0, 0, 0),
-                                                                 chr(8)))
+                file_str.write(self.colorcode(pixels[off(x, y)], (0, 0, 0)))
         file_str.write(chr(27) + u"[0m\n")
         return file_str.getvalue()
+
+
+class Shell8bit(Shell):
+    def __init__(self):
+        super(Shell8bit, self).__init__()
+
+    @classmethod
+    def colorcode(cls, bgcolor, fgcolor):
+        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), cls.color(*bgcolor),
+                                                 cls.color(*fgcolor), chr(8))
 
 
     @staticmethod
@@ -56,8 +67,3 @@ class Shell8bit(Formatter):
         code = 16 + (r * 36) + (g * 6) + b
 
         return code
-
-    @staticmethod
-    def dimentions():
-        rows, columns = os.popen('stty size', 'r').read().split()
-        return (int(columns), int(rows))
