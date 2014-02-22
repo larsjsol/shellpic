@@ -67,3 +67,12 @@ class Shell8bit(Shell):
         code = 16 + (r * 36) + (g * 6) + b
 
         return code
+
+class Shell24Bit(Shell):
+    def __init__(self):
+        super(Shell24Bit, self).__init__()
+
+    @classmethod
+    def colorcode(cls, bgcolor, fgcolor):
+        return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
+                                                            fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
