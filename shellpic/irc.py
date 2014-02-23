@@ -31,6 +31,28 @@ class Irc(Formatter):
         (0xd2, 0xd2, 0xd2)  #light gray
         )
 
+    # colors with a higher weight will be used more often
+    # i should probably figure out a better way to map colors...
+    weights = (
+    0.5, #white
+    1,   #black
+    1,   #blue (navy)
+    2,   #green
+    0.5, #red
+    0.5, #brown (maroon)
+    0.5, #purple
+    0.5, #orange (olive)
+    2,   #yellow
+    2,   #light green (lime)
+    2,   #teal
+    0.5, #light cyan
+    0.5, #light blue
+    2,   #ping
+    0.5, #grey
+    0.5  #light gray
+    )
+
+
     def __init__(self):
         super(Irc, self).__init__()
 
@@ -67,5 +89,7 @@ class Irc(Formatter):
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])
         distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(cls.palette)]
+        for d in distances:
+            d[0] /= cls.weights[d[1]]
         distances.sort(key=lambda x: x[0])
         return distances[0][1]
