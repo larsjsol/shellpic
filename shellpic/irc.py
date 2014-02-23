@@ -58,7 +58,7 @@ class Irc(Formatter):
 
     @staticmethod
     def dimentions():
-        return (160, 50) # guesstimation of how much room is normally available in a chatwindow
+        return (50, 50) # guesstimation of how much room is normally available in a chatwindow
 
     def format(self, image):
         def off(x, y):
@@ -84,7 +84,7 @@ class Irc(Formatter):
 
     @classmethod
     def color(cls, r, g, b):
-        # ugh, there is probably better way of doing this, but i can't make head or tail of
+        # ugh, there is probably better way of doing this, but i can't make heads or tails of
         # the PIL documentation
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])

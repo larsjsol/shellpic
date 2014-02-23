@@ -20,4 +20,6 @@ def scale(image, width, height):
     if imgheight > height * 2:
         scaleheight = float(height * 2) / imgheight
 
-    return image.resize((int(imgwidth * scalewidth), int(imgheight * scaleheight)))
+    scale = min(scaleheight, scalewidth)
+
+    return image.resize((int(imgwidth * scale), int(imgheight * scale)))
