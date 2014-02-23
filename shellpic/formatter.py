@@ -11,3 +11,7 @@ class Formatter(object):
 
     def format(self, image):
         raise NotImplementedError()
+
+    @staticmethod
+    def dimentions():
+        raise NotImplementedError()

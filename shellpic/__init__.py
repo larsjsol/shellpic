@@ -6,6 +6,7 @@
 #
 
 from shell import *
+from irc import *
 
 def scale(image, width, height):
     """ scale an image while keeping the aspect ratio"""
