@@ -21,6 +21,10 @@ if __name__ == "__main__":
                         help="Print text suitable for piping to an irc client")
     parser.add_argument("--no-scale", action="store_true",
                         help="Do not attempt to scale the image to fit the terminal")
+    parser.add_argument("--scale-x", nargs=1, type=int,
+                        help="Scale the image to this width")
+    parser.add_argument("--scale-y", nargs=1, type=int,
+                        help="Scale the image to this height")
     args = parser.parse_args()
 
     if args.irc:
@@ -29,10 +33,15 @@ if __name__ == "__main__":
         formatter = shellpic.Shell24Bit()
     else:
         formatter = shellpic.Shell8bit()
+    dimentions = formatter.dimentions()
 
     img = Image.open(args.image)
     if not args.no_scale:
-        img = shellpic.scale(img, *formatter.dimentions())
-    
+        if args.scale_x:
+            dimentions = [args.scale_x[0], dimentions[1]]
+        if args.scale_y:
+            dimentions = [dimentions[0], args.scale_y[0]]
+        img = shellpic.scale(img, *dimentions)
+        
     text = formatter.format(img)
     print text.encode('utf-8')
