@@ -33,7 +33,7 @@ If you do not have PIP or want the bleeding edge version of Shellpic::
 
     # clone the repo
     git clone https://github.com/larsjsol/shellpic.git
-    # install the packge
+    # install the package
     cd shellpic
     sudo python setup.py install
 
