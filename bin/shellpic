@@ -19,6 +19,8 @@ if __name__ == "__main__":
                         help="Print text suitable for a shell capable of displaying 24bit colors")
     parser.add_argument("--irc", action="store_true", 
                         help="Print text suitable for piping to an irc client")
+    parser.add_argument("--no-scale", action="store_true",
+                        help="Do not attempt to scale the image to fit the terminal")
     args = parser.parse_args()
 
     if args.irc:
@@ -29,7 +31,8 @@ if __name__ == "__main__":
         formatter = shellpic.Shell8bit()
 
     img = Image.open(args.image)
-    img = shellpic.scale(img, *formatter.dimentions())
+    if not args.no_scale:
+        img = shellpic.scale(img, *formatter.dimentions())
     
     text = formatter.format(img)
     print text.encode('utf-8')
