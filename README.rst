@@ -11,7 +11,7 @@ Examples
 Running 'shellpic <image>' in a terminal that supports 256-colors
 will get you something that looks like the image above.
 
-If you happen to have a terminal that is capable of showing true color
+If you happen to have a terminal that is capable of showing true colors,
 you can use the '--shell24'-switch to enable 24bit outout. It will look something like this:
     .. image:: img/shell24.png
         :alt: Lenna displayed with a color depth of 24 bits.
