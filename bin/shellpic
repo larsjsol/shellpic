@@ -6,6 +6,7 @@
 #
 import argparse
 import Image
+import sys
 
 import shellpic
 
@@ -30,4 +31,5 @@ if __name__ == "__main__":
     img = Image.open(args.image)
     img = shellpic.scale(img, *formatter.dimentions())
     
-    print formatter.format(img)
+    text = formatter.format(img)
+    print text.encode('utf-8')
