@@ -9,16 +9,16 @@ from distutils.core import setup
 
 setup(
     name='Shellpic',
-    version='1.0.1',
+    version='1.0.2',
     author=u'Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
     scripts=['bin/shellpic'],
-    url='http://pypi.python.org/pypi/Shellpic/',
+    url='https://github.com/larsjsol/shellpic',
     license='LICENSE',
     description='Displays images using shellcodes',
     long_description=open('README.rst').read(),
     install_requires=[
-        "PIP >= 1.1.7",
+        "PIL >= 1.1.7",
     ],
 )
