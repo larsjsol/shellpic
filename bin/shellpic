@@ -28,7 +28,8 @@ if __name__ == "__main__":
                         help="Scale the image to this width")
     parser.add_argument("--scale-y", nargs=1, type=int,
                         help="Scale the image to this height")
-    args = parser.parse_args()
+    parser.add_argument("--animate", action="store_true")
+    args = parser.parse_args()    
 
     # create the right kind of 'Formatter'
     if args.irc:
@@ -51,14 +52,29 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
+
     # scale it to fit the terminal
-    if not args.no_scale:
+    if not args.no_scale and not args.animate:
+        # FIXME find a way to resize without flattening the image
         if args.scale_x:
             dimentions = [args.scale_x[0], dimentions[1]]
         if args.scale_y:
             dimentions = [dimentions[0], args.scale_y[0]]
-        img = shellpic.scale(img, *dimentions)
+        img = shellpic.scale(img, *dimentions)    
+
+
+    if args.animate:
+        print formatter.clear_screen().encode('utf-8')
+        while True:
+            print formatter.move_cursor(0, 0).encode('utf-8')
+            print formatter.format(img).encode('utf-8')
+            try:
+                img.seek(img.tell() + 1)
+            except EOFError:
+                img.seek(0)
+    else:
+        # print the resutl to STDOUT
+        print formatter.format(img).encode('utf-8')
     
-    # print the resutl to STDOUT
-    text = formatter.format(img)
-    print text.encode('utf-8')
+
+            

@@ -19,6 +19,22 @@ class Shell(Formatter):
         rows, columns = os.popen('stty size < /dev/tty', 'r').read().split()
         return (int(columns), int(rows))
 
+    @staticmethod
+    def move_cursor(pos_x, pos_y):
+        return "{}[{};{}f".format(chr(27), pos_x, pos_y)
+
+    @staticmethod
+    def save_cursor():
+        return "{}[s".format(chr(27))
+
+    @staticmethod
+    def restore_cursor():
+        return "{}[r".format(chr(27))
+
+    @staticmethod
+    def clear_screen():
+        return "[{}[2J".format(chr(27))
+
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
         raise NotImplementedError()
@@ -28,10 +44,10 @@ class Shell(Formatter):
             """ the string offset for a coordinate """
             return (y * width) + x
 
-        # convert the image to RGB color and extract each channel
-        image = image.convert("RGB")
+        # convert it to RGB
+        image = image.convert('RGB')
 
-        pixels = image.getdata()
+        pixels = list(image.getdata())
         width, height = image.size
 
         file_str = StringIO.StringIO()
