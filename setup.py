@@ -19,7 +19,7 @@ except pkg_resources.DistributionNotFound:
 
 setup(
     name='Shellpic',
-    version='1.1',
+    version='1.1.1',
     author=u'Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
