@@ -5,7 +5,7 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 import argparse
-import Image
+from PIL import Image
 import sys
 
 import shellpic
