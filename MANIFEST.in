@@ -1,2 +1,2 @@
 include *.rst *.txt LICENSE
-recursive-include imge *.png
+recursive-include img *.png
