@@ -45,7 +45,7 @@ class Shell(Formatter):
             return (y * width) + x
 
         # convert it to RGB
-        image = image.convert('RGB')
+        image = image.convert('RGBA')
 
         pixels = list(image.getdata())
         width, height = image.size
@@ -59,7 +59,7 @@ class Shell(Formatter):
             file_str.write(chr(27) + u"[0m\n")
         if height % 2 != 0:
             for x in range(0, width):
-                file_str.write(self.colorcode(pixels[off(x, height - 1)], (0, 0, 0)))
+                file_str.write(self.colorcode(pixels[off(x, height - 1)], (0, 0, 0, 255)))
             file_str.write(chr(27) + u"[0m\n")
         return file_str.getvalue()
 
@@ -73,9 +73,14 @@ class Shell8bit(Shell):
         return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), cls.color(*bgcolor),
                                                  cls.color(*fgcolor), chr(8))
 
-
     @staticmethod
-    def color(r, g, b):
+    def color(r, g, b, a):
+        if a == 0:
+            # since we put two pixels in on character slot, we
+            # have now real way of doing transparency. Black might be the least
+            # bad color to use.
+            return 16
+
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) / 40 if r > 55 else 0
         g = (g - 55) / 40 if g > 55 else 0
