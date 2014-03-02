@@ -7,6 +7,7 @@
 import argparse
 from PIL import Image
 import sys
+import cStringIO
 
 import shellpic
 
@@ -40,7 +41,13 @@ if __name__ == "__main__":
     
     # load the image
     if args.image == '-':
-        img = Image.open(sys.stdin)
+        # we need to copy the entire image to a buffer as PIL likes to seek()
+        buf = cStringIO.StringIO()
+        buf.write(sys.stdin.read())
+        buf.seek(0)
+        img = Image.open(buf)
+        img.load() # so we can safely close buf
+        buf.close()
     else:
         img = Image.open(args.image)
 
