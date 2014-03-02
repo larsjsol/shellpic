@@ -11,8 +11,10 @@ import sys
 import shellpic
 
 if __name__ == "__main__":
+    
+    # parse command line parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument("image")
+    parser.add_argument("image", help="Use '-' to read from STDIN")
     parser.add_argument("--shell8", action="store_true", 
                         help="Print text suitable for a shell capable of displaying 8bit colors (default)")
     parser.add_argument("--shell24", action="store_true", 
@@ -27,6 +29,7 @@ if __name__ == "__main__":
                         help="Scale the image to this height")
     args = parser.parse_args()
 
+    # create the right kind of 'Formatter'
     if args.irc:
         formatter = shellpic.Irc()
     elif args.shell24:
@@ -34,14 +37,21 @@ if __name__ == "__main__":
     else:
         formatter = shellpic.Shell8bit()
     dimentions = formatter.dimentions()
+    
+    # load the image
+    if args.image == '-':
+        img = Image.open(sys.stdin)
+    else:
+        img = Image.open(args.image)
 
-    img = Image.open(args.image)
+    # scale it to fit the terminal
     if not args.no_scale:
         if args.scale_x:
             dimentions = [args.scale_x[0], dimentions[1]]
         if args.scale_y:
             dimentions = [dimentions[0], args.scale_y[0]]
         img = shellpic.scale(img, *dimentions)
-        
+    
+    # print the resutl to STDOUT
     text = formatter.format(img)
     print text.encode('utf-8')

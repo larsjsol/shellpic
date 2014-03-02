@@ -16,7 +16,7 @@ class Shell(Formatter):
 
     @staticmethod
     def dimentions():
-        rows, columns = os.popen('stty size', 'r').read().split()
+        rows, columns = os.popen('stty size < /dev/tty', 'r').read().split()
         return (int(columns), int(rows))
 
     @classmethod
