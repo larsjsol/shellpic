@@ -8,6 +8,7 @@ import argparse
 from PIL import Image
 import sys
 import cStringIO
+import time
 
 import shellpic
 
@@ -28,8 +29,15 @@ if __name__ == "__main__":
                         help="Scale the image to this width")
     parser.add_argument("--scale-y", nargs=1, type=int,
                         help="Scale the image to this height")
-    parser.add_argument("--animate", action="store_true")
+    parser.add_argument("--animate", action="store_true", 
+                        help="Animate the image")
+    parser.add_argument("--loop", action="store_true", 
+                        help="Force the animation to loop")
     args = parser.parse_args()    
+
+    # --loop implies --animate
+    if args.loop:
+        args.animate = True
 
     # create the right kind of 'Formatter'
     if args.irc:
@@ -62,19 +70,25 @@ if __name__ == "__main__":
             dimentions = [dimentions[0], args.scale_y[0]]
         img = shellpic.scale(img, *dimentions)    
 
-
+    # print the image as an animation
     if args.animate:
+        duration = float(img.info['duration']) / 1000
+        loop = img.info['loop'] or args.loop
         print formatter.clear_screen().encode('utf-8')
-        while True:
-            print formatter.move_cursor(0, 0).encode('utf-8')
-            print formatter.format(img).encode('utf-8')
-            try:
-                img.seek(img.tell() + 1)
-            except EOFError:
-                img.seek(0)
+        try: 
+            while True:
+                print formatter.move_cursor(0, 0).encode('utf-8')
+                print formatter.format(img).encode('utf-8')
+                time.sleep(duration)
+                try:
+                    img.seek(img.tell() + 1)
+                except EOFError:
+                    if loop:
+                        img.seek(0)
+                    else:
+                        break
+        except KeyboardInterrupt:
+            pass
     else:
-        # print the resutl to STDOUT
+        # or print the resutl to STDOUT
         print formatter.format(img).encode('utf-8')
-    
-
-            
