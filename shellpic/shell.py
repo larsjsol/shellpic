@@ -95,5 +95,9 @@ class Shell24Bit(Shell):
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
+        if bgcolor[3] == 0:
+            bgcolor = [0, 0, 0]
+        if fgcolor[3] == 0:
+            fgcolor = [0, 0, 0]
         return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                             fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
