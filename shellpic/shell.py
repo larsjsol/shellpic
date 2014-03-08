@@ -13,6 +13,7 @@ import StringIO
 class Shell(Formatter):
     def __init__(self):
         super(Shell, self).__init__()
+        self._background = None
 
     @staticmethod
     def dimentions():
@@ -39,26 +40,36 @@ class Shell(Formatter):
     def colorcode(cls, bgcolor, fgcolor):
         raise NotImplementedError()
 
-    def format(self, image):
-        def off(x, y):
-            """ the string offset for a coordinate """
-            return (y * width) + x
+    def color(self, pixels, width, x, y):
+        offset = (width * y) + x
+        rgba = pixels[offset]
+        if rgba[3] == 0:
+            rgba = self._background[offset]
+        else:
+            self._background[offset] = rgba
 
+        return rgba
+
+    def format(self, image):
         assert image.mode == 'RGBA'
 
         pixels = list(image.getdata())
         width, height = image.size
+
+        if not self._background:
+            self._background = [0, 0, 0, 255] * len(pixels)
 
         file_str = StringIO.StringIO()
 
         yrange = height if height % 2 == 0 else height - 1
         for y in range(0, yrange, 2):
             for x in range(0, width):
-                file_str.write(self.colorcode(pixels[off(x, y)], pixels[off(x, y + 1)]))
+                file_str.write(self.colorcode(self.color(pixels, width, x, y),
+                                              self.color(pixels, width, x, y + 1)))
             file_str.write(chr(27) + u"[0m\n")
         if height % 2 != 0:
             for x in range(0, width):
-                file_str.write(self.colorcode(pixels[off(x, height - 1)], (0, 0, 0, 255)))
+                file_str.write(self.colorcode(self.color(pixels, width, x, height - 1), (0, 0, 0, 255)))
             file_str.write(chr(27) + u"[0m\n")
         return file_str.getvalue()
 
@@ -69,17 +80,11 @@ class Shell8bit(Shell):
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
-        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), cls.color(*bgcolor),
-                                                 cls.color(*fgcolor), chr(8))
+        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), cls.color_value_8bit(*bgcolor),
+                                                 cls.color_value_8bit(*fgcolor), chr(8))
 
     @staticmethod
-    def color(r, g, b, a):
-        if a == 0:
-            # since we put two pixels in on character slot, we
-            # have now real way of doing transparency. Black might be the least
-            # bad color to use.
-            return 16
-
+    def color_value_8bit(r, g, b, a):
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) / 40 if r > 55 else 0
         g = (g - 55) / 40 if g > 55 else 0
@@ -94,9 +99,5 @@ class Shell24Bit(Shell):
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
-        if bgcolor[3] == 0:
-            bgcolor = [0, 0, 0]
-        if fgcolor[3] == 0:
-            fgcolor = [0, 0, 0]
         return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                             fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
