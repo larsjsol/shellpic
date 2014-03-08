@@ -87,7 +87,11 @@ if __name__ == "__main__":
     # print the image as an animation
     if args.animate:
         duration = float(img.info['duration']) / 1000
-        loop = img.info['loop'] or args.loop
+        if args.loop:
+            loop = True
+        else:
+            loop = img.info['loop'] if 'loop' in img.info else False
+
         print formatter.clear_screen().encode('utf-8')
         try: 
             while True:
