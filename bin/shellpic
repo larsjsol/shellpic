@@ -30,14 +30,10 @@ if __name__ == "__main__":
     parser.add_argument("--scale-y", nargs=1, type=int,
                         help="Scale the image to this height")
     parser.add_argument("--animate", action="store_true", 
-                        help="Animate the image")
+                        help="Animate the image once")
     parser.add_argument("--loop", action="store_true", 
-                        help="Force the animation to loop")
+                        help="Animate the image and loop indefinetly")
     args = parser.parse_args()    
-
-    # --loop implies --animate
-    if args.loop:
-        args.animate = True
 
     # create the right kind of 'Formatter'
     if args.irc:
@@ -85,13 +81,8 @@ if __name__ == "__main__":
 
 
     # print the image as an animation
-    if args.animate:
+    if args.animate or args.loop:
         duration = float(img.info['duration']) / 1000
-        if args.loop:
-            loop = True
-        else:
-            loop = img.info['loop'] if 'loop' in img.info else False
-
         print formatter.clear_screen().encode('utf-8')
         try: 
             while True:
@@ -99,7 +90,7 @@ if __name__ == "__main__":
                     print formatter.move_cursor(0, 0).encode('utf-8')
                     print formatter.format(frame).encode('utf-8')
                     time.sleep(duration)
-                if not loop:
+                if not args.loop:
                     break
         except KeyboardInterrupt:
             print formatter.clear_screen().encode('utf-8')
