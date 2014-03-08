@@ -44,8 +44,7 @@ class Shell(Formatter):
             """ the string offset for a coordinate """
             return (y * width) + x
 
-        # convert it to RGBA
-        image = image.convert('RGBA')
+        assert image.mode == 'RGBA'
 
         pixels = list(image.getdata())
         width, height = image.size

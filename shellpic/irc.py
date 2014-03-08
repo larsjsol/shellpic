@@ -65,7 +65,8 @@ class Irc(Formatter):
             """ the string offset for a coordinate """
             return (y * width) + x
 
-        image = image.convert('RGB')
+        assert image.mode == 'RGBA'
+
         width, height = image.size
         pixels = [self.color(*p) for p in image.getdata()]
 
@@ -83,7 +84,7 @@ class Irc(Formatter):
         return file_str.getvalue()
 
     @classmethod
-    def color(cls, r, g, b):
+    def color(cls, r, g, b, a):
         # ugh, there is probably better way of doing this, but i can't make heads or tails of
         # the PIL documentation
         def distance(a, b):

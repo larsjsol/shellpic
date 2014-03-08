@@ -60,17 +60,17 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
-    # extract the frames for animation
+    # extract the frames for animation and convert them to RGBA
     if args.animate:
-        frames = [img.copy()]
+        frames = [img.convert('RGBA')]
         while True:
             try:
                 img.seek(img.tell() + 1)
-                frames.append(img.copy())
+                frames.append(img.convert('RGBA'))
             except EOFError:
                 break
     else:
-        frames = [img]
+        frames = [img.convert('RGBA')]
 
     # scale it to fit the terminal
     if not args.no_scale:
