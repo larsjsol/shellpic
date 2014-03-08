@@ -57,7 +57,7 @@ class Shell(Formatter):
         width, height = image.size
 
         if not self._background:
-            self._background = [0, 0, 0, 255] * len(pixels)
+            self._background = [(0, 0, 0, 255)] * len(pixels)
 
         file_str = StringIO.StringIO()
 
