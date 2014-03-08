@@ -56,17 +56,17 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
-    # extract the frames for animation and convert them to RGBA
-    if args.animate:
-        frames = [img.convert('RGBA')]
+    # extract the frames for animation
+    if args.animate or args.loop:
+        frames = [img.copy()]
         while True:
             try:
                 img.seek(img.tell() + 1)
-                frames.append(img.convert('RGBA'))
+                frames.append(img.copy())
             except EOFError:
                 break
     else:
-        frames = [img.convert('RGBA')]
+        frames = [img.copy()]
 
     # scale it to fit the terminal
     if not args.no_scale:
@@ -79,6 +79,10 @@ if __name__ == "__main__":
         for i in range(0, len(frames)):
             frames[i] = shellpic.scale(frames[i], *dimentions)
 
+    # convert the image to RGBA, this must be done after any
+    # resizing to prevent artifacts
+    for i in range(len(frames)):
+        frames[i] = frames[i].convert('RGBA')
 
     # print the image as an animation
     if args.animate or args.loop:

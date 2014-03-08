@@ -8,6 +8,8 @@
 from shell import *
 from irc import *
 
+import PIL
+
 def scale(image, width, height):
     """ scale an image while keeping the aspect ratio"""
     imgwidth, imgheight = image.size
@@ -22,4 +24,4 @@ def scale(image, width, height):
 
     scale = min(scaleheight, scalewidth)
 
-    return image.resize((int(imgwidth * scale), int(imgheight * scale)))
+    return image.resize((int(imgwidth * scale), int(imgheight * scale)), PIL.Image.ANTIALIAS)
