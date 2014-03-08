@@ -60,15 +60,29 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
+    # extract the frames for animation
+    if args.animate:
+        frames = [img.copy()]
+        while True:
+            try:
+                img.seek(img.tell() + 1)
+                frames.append(img.copy())
+            except EOFError:
+                break
+    else:
+        frames = [img]
 
     # scale it to fit the terminal
-    if not args.no_scale and not args.animate:
-        # FIXME find a way to resize without flattening the image
+    if not args.no_scale:
         if args.scale_x:
             dimentions = [args.scale_x[0], dimentions[1]]
         if args.scale_y:
             dimentions = [dimentions[0], args.scale_y[0]]
-        img = shellpic.scale(img, *dimentions)    
+        
+        # it seems like each frame must be resized individually 
+        for i in range(0, len(frames)):
+            frames[i] = shellpic.scale(frames[i], *dimentions)
+
 
     # print the image as an animation
     if args.animate:
@@ -77,18 +91,14 @@ if __name__ == "__main__":
         print formatter.clear_screen().encode('utf-8')
         try: 
             while True:
-                print formatter.move_cursor(0, 0).encode('utf-8')
-                print formatter.format(img).encode('utf-8')
-                time.sleep(duration)
-                try:
-                    img.seek(img.tell() + 1)
-                except EOFError:
-                    if loop:
-                        img.seek(0)
-                    else:
-                        break
+                for frame in frames:
+                    print formatter.move_cursor(0, 0).encode('utf-8')
+                    print formatter.format(frame).encode('utf-8')
+                    time.sleep(duration)
+                if not loop:
+                    break
         except KeyboardInterrupt:
             print formatter.clear_screen().encode('utf-8')
     else:
         # or print the resutl to STDOUT
-        print formatter.format(img).encode('utf-8')
+        print formatter.format(frames[0]).encode('utf-8')
