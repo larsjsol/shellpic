@@ -56,14 +56,20 @@ class Shell(Formatter):
         assert image.mode == 'RGBA'
         if dispose:
             assert dispose.mode == 'RGBA'
-            dispose_pixels = list(dispose.getdata())
-        dispose_pixels = None
 
         width, height = image.size
 
         if not self._prev_frame:
             self._prev_frame = [[[0, 0, 0, 255] for y in range(height)] for x in range(width)]
 
+        if dispose:
+            try:
+                dispose_pixels = list(dispose.getdata())
+            except AttributeError:
+                # i suppose things like are bound to happen when i depend on a undocumented property...
+                dispose_pixels = [[0, 0, 0, 255]] * width * height
+        else:
+            dispose_pixels = None
 
         pixels = list(image.getdata())
 
