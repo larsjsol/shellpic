@@ -31,4 +31,16 @@ setup(
     install_requires=[
         imaging_requires,
     ],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: POSIX",
+        "Programming Language :: Python :: 2.7",
+        "Topic :: Artistic Software",
+        "Topic :: Games/Entertainment",
+        "Topic :: Multimedia :: Graphics",
+        "Topic :: Multimedia :: Graphics :: Viewers",
+        "Topic :: Utilities",
+        ],
 )
