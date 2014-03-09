@@ -12,6 +12,8 @@ from irc import *
 import PIL
 from collections import Sequence
 
+VERSION = "1.2"
+
 def scale(image, width, height):
     """ scale an image while keeping the aspect ratio"""
     imgwidth, imgheight = image.size

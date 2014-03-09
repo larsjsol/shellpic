@@ -19,14 +19,14 @@ except pkg_resources.DistributionNotFound:
 
 setup(
     name='Shellpic',
-    version='1.1.1',
+    version='1.2',
     author=u'Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
     scripts=['bin/shellpic'],
     url='https://github.com/larsjsol/shellpic',
     license='GPLv3',
-    description='Displays images using shellcodes',
+    description='Displays images using escape codes',
     long_description=open('README.rst').read(),
     install_requires=[
         imaging_requires,
