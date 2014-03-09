@@ -40,41 +40,44 @@ class Shell(Formatter):
     def colorcode(cls, bgcolor, fgcolor):
         raise NotImplementedError()
 
-    def color(self, image, dispose, x, y):
-        rgba = image.getpixel((x, y))
+    def color(self, pixels, dispose, x, y, width):
+        rgba = pixels[(y * width) + x]
         if rgba[3] == 0:
             if dispose:
-                rgba = dispose.getpixel((x, y))
+                rgba = dispose[(y * width) + x]
             elif self._prev_frame:
-                rgba = self._prev_frame.getpixel((x, y))
+                rgba = self._prev_frame[x][y]
             else:
                 rgba = (0, 0, 0, 255)
-        self._prev_frame.putpixel((x, y), rgba)
+        self._prev_frame[x][y] = rgba
         return rgba
 
     def format(self, image, dispose=None):
         assert image.mode == 'RGBA'
         if dispose:
             assert dispose.mode == 'RGBA'
+            dispose_pixels = list(dispose.getdata())
+        dispose_pixels = None
+
+        width, height = image.size
 
         if not self._prev_frame:
-            self._prev_frame = image
+            self._prev_frame = [[[0, 0, 0, 255] for y in range(height)] for x in range(width)]
 
 
         pixels = list(image.getdata())
-        width, height = image.size
 
         file_str = StringIO.StringIO()
 
         yrange = height if height % 2 == 0 else height - 1
         for y in range(0, yrange, 2):
             for x in range(0, width):
-                file_str.write(self.colorcode(self.color(image, dispose, x, y),
-                                              self.color(image, dispose, x, y + 1)))
+                file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, y, width),
+                                              self.color(pixels, dispose_pixels, x, y + 1, width)))
             file_str.write(chr(27) + u"[0m\n")
         if height % 2 != 0:
             for x in range(0, width):
-                file_str.write(self.colorcode(self.color(image, dispose, x, height - 1), (0, 0, 0, 255)))
+                file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, height - 1, width), (0, 0, 0, 255)))
             file_str.write(chr(27) + u"[0m\n")
 
 

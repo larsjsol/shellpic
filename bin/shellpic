@@ -9,11 +9,12 @@ from PIL import Image
 import sys
 import cStringIO
 import time
+import cProfile
 
 import shellpic
 
-if __name__ == "__main__":
-    
+
+def main():    
     # parse command line parameters
     parser = argparse.ArgumentParser()
     parser.add_argument("image", help="Use '-' to read from STDIN")
@@ -56,8 +57,12 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
+    # grab what we need from the info-property, as some transformations might change them
     if 'background' in img.info:
         formatter.bgcolor = shellpic.ensure_rgb(img.palette, img.info['background'])
+    if 'duration' in img.info:
+        frame_delay = img.info['duration']
+
 
     # extract the frames for animation
     if args.animate or args.loop:
@@ -108,16 +113,19 @@ if __name__ == "__main__":
             dispose_frames[i] = dispose_frames[i].convert('RGBA')
 
 
+
     # print the image as an animation
     if args.animate or args.loop:
-        duration = float(img.info['duration']) / 1000
+        delay = float(frame_delay) / 1000
         print formatter.clear_screen().encode('utf-8')
         try: 
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
+                    start = time.time()
                     print formatter.move_cursor(0, 0).encode('utf-8')
                     print formatter.format(frame, dispose).encode('utf-8')
-                    time.sleep(duration)
+                    done = time.time()
+                    time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
                     break
         except KeyboardInterrupt:
@@ -125,3 +133,7 @@ if __name__ == "__main__":
     else:
         # or print the resutl to STDOUT
         print formatter.format(frames[0]).encode('utf-8')
+
+
+if __name__ == "__main__":
+    main()
