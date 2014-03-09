@@ -60,7 +60,7 @@ class Irc(Formatter):
     def dimentions():
         return (50, 50) # guesstimation of how much room is normally available in a chatwindow
 
-    def format(self, image):
+    def format(self, image, dispose=None):
         def off(x, y):
             """ the string offset for a coordinate """
             return (y * width) + x

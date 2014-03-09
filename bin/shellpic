@@ -56,17 +56,28 @@ if __name__ == "__main__":
     else:
         img = Image.open(args.image)
 
+    if 'background' in img.info:
+        formatter.bgcolor = shellpic.ensure_rgb(img.palette, img.info['background'])
+
     # extract the frames for animation
     if args.animate or args.loop:
         frames = [img.copy()]
+        dispose_frames = []
+
         while True:
             try:
+                if hasattr(img, 'dispose'):
+                    dispose_frames.append(img.dispose)
+                else:
+                    dispose_frames.append(None)
                 img.seek(img.tell() + 1)
                 frames.append(img.copy())
             except EOFError:
                 break
     else:
         frames = [img.copy()]
+        if hasattr(img, 'dispose'):
+            dispose_frames = [img.dispose]
 
     # scale it to fit the terminal
     if not args.no_scale:
@@ -76,13 +87,26 @@ if __name__ == "__main__":
             dimentions = [dimentions[0], args.scale_y[0]]
         
         # it seems like each frame must be resized individually 
-        for i in range(0, len(frames)):
+        for i in range(len(frames)):
             frames[i] = shellpic.scale(frames[i], *dimentions)
+
+        try:
+            for i in range(len(dispose_frames)):
+                if dispose_frames[i]:
+                    dispose_frames[i] = shellpic.scale(dispose_frames[i], *dimentions)
+        except ValueError:
+            # how is this possible? This exception should be cought in scale()
+            pass # FIXME do something smart
+
 
     # convert the image to RGBA, this must be done after any
     # resizing to prevent artifacts
     for i in range(len(frames)):
         frames[i] = frames[i].convert('RGBA')
+    for i in range(len(dispose_frames)):
+        if dispose_frames[i]:
+            dispose_frames[i] = dispose_frames[i].convert('RGBA')
+
 
     # print the image as an animation
     if args.animate or args.loop:
@@ -90,9 +114,9 @@ if __name__ == "__main__":
         print formatter.clear_screen().encode('utf-8')
         try: 
             while True:
-                for frame in frames:
+                for frame, dispose in zip(frames, dispose_frames):
                     print formatter.move_cursor(0, 0).encode('utf-8')
-                    print formatter.format(frame).encode('utf-8')
+                    print formatter.format(frame, dispose).encode('utf-8')
                     time.sleep(duration)
                 if not args.loop:
                     break

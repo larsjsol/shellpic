@@ -9,7 +9,7 @@ class Formatter(object):
     def __init__(self):
         super(Formatter, self).__init__()
 
-    def format(self, image):
+    def format(self, image, dispose=None):
         raise NotImplementedError()
 
     @staticmethod

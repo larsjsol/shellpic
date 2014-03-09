@@ -13,7 +13,7 @@ import StringIO
 class Shell(Formatter):
     def __init__(self):
         super(Shell, self).__init__()
-        self._background = None
+        self._prev_frame = None
 
     @staticmethod
     def dimentions():
@@ -40,39 +40,45 @@ class Shell(Formatter):
     def colorcode(cls, bgcolor, fgcolor):
         raise NotImplementedError()
 
-    def color(self, pixels, width, x, y):
-        offset = (width * y) + x
-        rgba = pixels[offset]
+    def color(self, image, dispose, x, y):
+        rgba = image.getpixel((x, y))
         if rgba[3] == 0:
-            rgba = self._background[offset]
-        else:
-            self._background[offset] = rgba
-
+            if dispose:
+                rgba = dispose.getpixel((x, y))
+            elif self._prev_frame:
+                rgba = self._prev_frame.getpixel((x, y))
+            else:
+                rgba = (0, 0, 0, 255)
+        self._prev_frame.putpixel((x, y), rgba)
         return rgba
 
-    def format(self, image):
+    def format(self, image, dispose=None):
         assert image.mode == 'RGBA'
+        if dispose:
+            assert dispose.mode == 'RGBA'
+
+        if not self._prev_frame:
+            self._prev_frame = image
+
 
         pixels = list(image.getdata())
         width, height = image.size
-
-        if not self._background:
-            self._background = [(0, 0, 0, 255)] * len(pixels)
 
         file_str = StringIO.StringIO()
 
         yrange = height if height % 2 == 0 else height - 1
         for y in range(0, yrange, 2):
             for x in range(0, width):
-                file_str.write(self.colorcode(self.color(pixels, width, x, y),
-                                              self.color(pixels, width, x, y + 1)))
+                file_str.write(self.colorcode(self.color(image, dispose, x, y),
+                                              self.color(image, dispose, x, y + 1)))
             file_str.write(chr(27) + u"[0m\n")
         if height % 2 != 0:
             for x in range(0, width):
-                file_str.write(self.colorcode(self.color(pixels, width, x, height - 1), (0, 0, 0, 255)))
+                file_str.write(self.colorcode(self.color(image, dispose, x, height - 1), (0, 0, 0, 255)))
             file_str.write(chr(27) + u"[0m\n")
-        return file_str.getvalue()
 
+
+        return file_str.getvalue()
 
 class Shell8bit(Shell):
     def __init__(self):
@@ -84,7 +90,7 @@ class Shell8bit(Shell):
                                                  cls.color_value_8bit(*fgcolor), chr(8))
 
     @staticmethod
-    def color_value_8bit(r, g, b, a):
+    def color_value_8bit(r, g, b, a=255):
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) / 40 if r > 55 else 0
         g = (g - 55) / 40 if g > 55 else 0
