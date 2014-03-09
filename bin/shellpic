@@ -62,6 +62,8 @@ def main():
         formatter.bgcolor = shellpic.ensure_rgb(img.palette, img.info['background'])
     if 'duration' in img.info:
         frame_delay = img.info['duration']
+    else:
+        frame_delay = 0
 
 
     # extract the frames for animation
