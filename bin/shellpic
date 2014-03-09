@@ -65,9 +65,9 @@ def main():
 
 
     # extract the frames for animation
+    dispose_frames = []    
     if args.animate or args.loop:
         frames = [img.copy()]
-        dispose_frames = []
 
         while True:
             try:
