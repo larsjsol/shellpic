@@ -12,17 +12,25 @@ Examples
 Running ``shellpic <image>`` in a terminal that supports 256-colors
 will get you something that looks like the image above.
 
-If you happen to have a terminal that is capable of showing true colors,
-you can use the ``--shell24``-switch to enable 24bit output. It will look something like this:
+If you happen to have a terminal that is capable of showing true
+colors, you can use the ``--shell24``-switch to enable 24bit output.
+It will look something like this:
 
     .. image:: img/shell24.png
         :alt: Lenna displayed with a color depth of 24 bits.
 
-Shellpic can also be used with irc-clients. Run the script from your client and use the ``--irc``-switch, the result will depend on the client used. This is how it looks in xchat:
+Shellpic can also be used with irc-clients. Run the script from your
+client and use the ``--irc``-switch, the result will depend on the
+client used. This is how it looks in xchat:
 
     .. image:: img/irc.png
         :alt: Lenna displayed in 16 colors by xchat.
 
+Use the ``--animate`` (show the animation once, then exit) or
+``--loop`` (animate and loop forever) to animate gifs.
+
+    .. image:: img/imp_shell24.gif
+        :alt: An animated gif shown in a terminal.
 
 Install
 -------
