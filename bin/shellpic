@@ -116,9 +116,9 @@ def main():
 
     # print the image as an animation
     if args.animate or args.loop:
-        delay = float(frame_delay) / 1000
-        print formatter.clear_screen().encode('utf-8')
-        try: 
+        try:
+            delay = float(frame_delay) / 1000
+            print formatter.clear_screen().encode('utf-8')
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
@@ -130,6 +130,9 @@ def main():
                     break
         except KeyboardInterrupt:
             print formatter.clear_screen().encode('utf-8')
+        except NotImplementedError:
+            sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
+            exit(1)
     else:
         # or print the resutl to STDOUT
         print formatter.format(frames[0]).encode('utf-8')

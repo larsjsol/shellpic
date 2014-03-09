@@ -15,3 +15,19 @@ class Formatter(object):
     @staticmethod
     def dimentions():
         raise NotImplementedError()
+
+    @staticmethod
+    def move_cursor(pos_x, pos_y):
+        raise NotImplementedError()
+
+    @staticmethod
+    def save_cursor():
+        raise NotImplementedError()
+
+    @staticmethod
+    def restore_cursor():
+        raise NotImplementedError()
+
+    @staticmethod
+    def clear_screen():
+        raise NotImplementedError()
