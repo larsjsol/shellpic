@@ -26,7 +26,7 @@ setup(
     scripts=['bin/shellpic'],
     url='https://github.com/larsjsol/shellpic',
     license='GPLv3',
-    description='Displays images using escape codes',
+    description='Display images using escape codes',
     long_description=open('README.rst').read(),
     install_requires=[
         imaging_requires,
