@@ -132,6 +132,9 @@ def main():
                     break
         except KeyboardInterrupt:
             print formatter.clear_screen().encode('utf-8')
+            print formatter.move_cursor(0, 0).encode('utf-8')
+            print formatter.format(frame, dispose).encode('utf-8')
+            
         except NotImplementedError:
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
             exit(1)
