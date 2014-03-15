@@ -55,7 +55,11 @@ def main():
         img.load() # so we can safely close buf
         buf.close()
     else:
-        img = Image.open(args.image)
+        try:
+            img = Image.open(args.image)
+        except IOError as excp:
+            sys.stderr.write(str(excp) + '\n')
+            exit(1)
 
     # grab what we need from the info-property, as some transformations might change them
     if 'background' in img.info:
