@@ -27,7 +27,7 @@ client used. This is how it looks in xchat:
         :alt: Lenna displayed in 16 colors by xchat.
 
 Use the ``--animate`` (show the animation once, then exit) or
-``--loop`` (animate and loop forever) to animate gifs. There is 
+``--loop`` (animate and loop forever) to animate gifs. There is a
 noticable difference between between terminals of how smooth 
 the animation looks. KDE's ``terminal`` seems to handle it well.
 
