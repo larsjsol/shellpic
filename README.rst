@@ -59,4 +59,4 @@ If you do not have PIP or want the bleeding edge version of Shellpic:
 
 Changelog
 ---------
-See `CHANGES.rst <https://raw.github.com/larsjsol/shellpic/master/CHANGES.rst>`_
+See `CHANGES.rst <https://github.com/larsjsol/shellpic/blob/master/CHANGES.rst>`_
