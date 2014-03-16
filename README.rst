@@ -29,7 +29,7 @@ client used. This is how it looks in xchat:
 Use the ``--animate`` (show the animation once, then exit) or
 ``--loop`` (animate and loop forever) to animate gifs. There is a
 noticable difference between between terminals of how smooth 
-the animation looks. KDE's ``terminal`` seems to handle it well.
+the animation looks. KDE's ``konsole`` seems to handle it well.
 
     .. image:: https://raw.github.com/larsjsol/shellpic/master/img/imp_shell24.gif
         :alt: An animated gif shown in a terminal.
