@@ -61,4 +61,4 @@ Changelog
 ---------
 See `CHANGES.rst <CHANGES.rst>`_
 
-.. include:: inclusion.txt
+.. include:: CHANGES.rst
