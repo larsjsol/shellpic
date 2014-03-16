@@ -248,3 +248,45 @@ class Shell24Bit(Shell):
     def colorcode(cls, bgcolor, fgcolor):
         return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                             fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
+
+class Shell4Bit(Shell):
+    """
+    A formatter for 16-color terminals.
+    """
+
+    palette = (
+        (0, 0, 0),       #  0 black
+        (205, 0, 0),     #  1 red3
+        (0, 205, 0),     #  2 green3
+        (205, 205, 0),   #  3 yellow3
+        (0, 0, 205),     #  4 blue3
+        (205, 0, 205),   #  5 magenta3
+        (0, 205, 205),   #  6 cyan
+        (229, 229, 229), #  7 gray90
+        (77, 77, 77),    #  8 gray30
+        (255, 0, 0),     #  9 red
+        (0, 255, 0),     # 10 green
+        (255, 255, 0),   # 11 yellow
+        (0, 0, 255),     # 12 blue
+        (255, 0, 255),   # 13 magenta
+        (0, 255, 255),   # 14 cyan
+        (255, 255, 255), # 15 white
+        )
+
+    def __init__(self):
+        super(Shell4Bit, self).__init__()
+
+    @classmethod
+    def color_value_4bit(cls, r, g, b, a=255):
+        def distance(a, b):
+            return sum([pow(x - y, 2) for x, y in zip(a, b)])
+        distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(cls.palette)]
+        distances.sort(key=lambda x: x[0])
+        code = distances[0][1]
+        code = 30 + code if code < 8 else 82 + code
+        return code
+
+    @classmethod
+    def colorcode(cls, bgcolor, fgcolor):
+        return u"{}[{};{}m▄ ".format(chr(27), cls.color_value_4bit(*bgcolor) + 10, 
+                                     cls.color_value_4bit(*fgcolor))

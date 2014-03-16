@@ -20,6 +20,8 @@ def main():
     parser.add_argument("image", help="Use '-' to read from STDIN")
     parser.add_argument("--version", action="version", version="Version: " + shellpic.VERSION,
                         help="Print verions number and exit.")
+    parser.add_argument("--shell4", action="store_true",
+                        help="Print text suitable for a shell capable of displaying 16 colors")
     parser.add_argument("--shell8", action="store_true", 
                         help="Print text suitable for a shell capable of displaying 8bit colors (default)")
     parser.add_argument("--shell24", action="store_true", 
@@ -44,6 +46,8 @@ def main():
         formatter = shellpic.Irc()
     elif args.shell24:
         formatter = shellpic.Shell24Bit()
+    elif args.shell4:
+        formatter = shellpic.Shell4Bit()
     else:
         formatter = shellpic.Shell8bit()
     dimentions = formatter.dimentions()
