@@ -19,7 +19,7 @@ except pkg_resources.DistributionNotFound:
 
 setup(
     name='Shellpic',
-    version='1.2.1',
+    version='1.2.2',
     author=u'Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
@@ -36,6 +36,7 @@ setup(
         "Environment :: Console",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX",
+        "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Topic :: Artistic Software",
         "Topic :: Games/Entertainment",
