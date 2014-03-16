@@ -12,7 +12,7 @@ from irc import *
 import PIL
 from collections import Sequence
 
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 
 def scale(image, width, height):
     """

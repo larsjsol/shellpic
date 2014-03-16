@@ -1,6 +1,14 @@
 Version History
 ===============
 
+v1.2.2, 2014-03-16
+  * Make animations appear in the normal text flow.
+  * Fix problem where animations would sometimes 'jump'.
+  * Added ``--version`` parameter.
+  * Leave the last frame of an animation visible when quitting.
+  * Added lots of docstrings.
+  * Animation might be slightly smoother on slow terminals. 
+
 v1.2.1, 2014-03-10
   * Fixed crash when trying to animate pictures that are not animated.
 
