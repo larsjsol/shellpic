@@ -27,13 +27,15 @@ client used. This is how it looks in xchat:
         :alt: Lenna displayed in 16 colors by xchat.
 
 Use the ``--animate`` (show the animation once, then exit) or
-``--loop`` (animate and loop forever) to animate gifs.
+``--loop`` (animate and loop forever) to animate gifs. There is 
+noticable difference between between terminals of how smooth 
+the animation looks. KDE's ``terminal`` seems to handle it well.
 
     .. image:: img/imp_shell24.gif
         :alt: An animated gif shown in a terminal.
 
-Install
--------
+Installation
+------------
 You should have PIL_ (>=1.1.7) or Pillow_ (>=1.0) installed. Shellpic is tested with Python 2.7.
 
 .. _PIL: https://pypi.python.org/pypi/PIL
@@ -55,3 +57,8 @@ If you do not have PIP or want the bleeding edge version of Shellpic:
     cd shellpic
     sudo python setup.py install
 
+Changelog
+---------
+See `CHANGES.rst <CHANGES.rst>`_
+
+.. include:: inclusion.txt
