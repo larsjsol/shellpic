@@ -126,12 +126,12 @@ def main():
     if args.animate or args.loop:
         try:
             delay = float(frame_delay) / 1000
-            print formatter.clear_screen().encode('utf-8')
+            print formatter.clear_screen().encode('utf-8'),
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
-                    print formatter.move_cursor(0, 0).encode('utf-8')
-                    print formatter.format(frame, dispose).encode('utf-8')
+                    print formatter.move_cursor(0, 0).encode('utf-8'),
+                    print formatter.format(frame, dispose).encode('utf-8'),
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:

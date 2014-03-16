@@ -24,7 +24,7 @@ def scale(image, width, height):
     if imgwidth > width:
         scalewidth = float(width) / (imgwidth + 2)
     if imgheight > height * 2:
-        scaleheight = float(height * 2) / imgheight
+        scaleheight = float((height - 1) * 2) / imgheight
     scale = min(scaleheight, scalewidth)
 
     try:
