@@ -12,6 +12,21 @@ import StringIO
 import termios
 import sys
 import re
+import functools
+
+
+def memoize(obj):
+# from https://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
+    cache = obj.cache = {}
+
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = obj(*args, **kwargs)
+        return cache[key]
+    return memoizer
+
 
 class Shell(shellpic.Formatter):
     """
@@ -215,10 +230,11 @@ class Shell8bit(Shell):
     def __init__(self):
         super(Shell8bit, self).__init__()
 
-    @classmethod
-    def colorcode(cls, bgcolor, fgcolor):
-        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), cls.color_value_8bit(*bgcolor),
-                                                 cls.color_value_8bit(*fgcolor), chr(8))
+    @staticmethod
+    @memoize
+    def colorcode(bgcolor, fgcolor):
+        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), Shell8bit.color_value_8bit(*bgcolor),
+                                                 Shell8bit.color_value_8bit(*fgcolor), chr(8))
 
     @staticmethod
     def color_value_8bit(r, g, b, a=255):
@@ -244,8 +260,9 @@ class Shell24Bit(Shell):
     def __init__(self):
         super(Shell24Bit, self).__init__()
 
-    @classmethod
-    def colorcode(cls, bgcolor, fgcolor):
+    @staticmethod
+    @memoize
+    def colorcode(bgcolor, fgcolor):
         return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                             fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
 
@@ -307,7 +324,8 @@ class Shell4Bit(Shell):
         code = 30 + code if code < 8 else 82 + code
         return code
 
-    @classmethod
-    def colorcode(cls, bgcolor, fgcolor):
-        return u"{}[{};{}m▄ ".format(chr(27), cls.color_value_4bit(*bgcolor) + 10, 
-                                     cls.color_value_4bit(*fgcolor))
+    @staticmethod
+    @memoize
+    def colorcode(bgcolor, fgcolor):
+        return u"{}[{};{}m▄ ".format(chr(27), Shell4Bit.color_value_4bit(*bgcolor) + 10, 
+                                     Shell4Bit.color_value_4bit(*fgcolor))

@@ -10,7 +10,7 @@ from shell import *
 from irc import *
 
 import PIL
-from collections import Sequence
+import collections
 
 VERSION = "1.2.1"
 
@@ -41,7 +41,7 @@ def ensure_rgb(palette, pixel):
     Return the an rgb tuple for pixel, look it up in palette if
     necessary.
     """
-    if isinstance(pixel, Sequence):
+    if isinstance(pixel, collections.Sequence):
         return pixel[:3]
     else:
         return palette_lookup(palette, pixel)
