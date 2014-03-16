@@ -10,6 +10,9 @@ from shellpic.formatter import Formatter
 import StringIO
 
 class Irc(Formatter):
+    """
+    A formatter for irc-clients.
+    """
 
     # mIRC palette according to http://forum.xchat.org/viewtopic.php?f=6&t=7719
     palette = (

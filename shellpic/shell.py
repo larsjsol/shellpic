@@ -14,12 +14,20 @@ import sys
 import re
 
 class Shell(shellpic.Formatter):
+    """
+    A formatter for terminals, uses shell escape codes to draw images.
+
+    This is an abstract class.
+    """
     def __init__(self):
         super(Shell, self).__init__()
         self._prev_frame = None
 
     @staticmethod
     def dimentions():
+        """
+        Return the number of columns and rows in the current terminal.
+        """
         rows, columns = os.popen('stty size < /dev/tty', 'r').read().split()
         return (int(columns), int(rows))
 
@@ -82,12 +90,34 @@ class Shell(shellpic.Formatter):
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
+        """
+        Return a string for drawing two pixels where one is placed
+        above the other. The top pixel will be the color bgcolor and
+        the bottom one will be fgcolor.
+
+        This method must be implemented by a subclass.
+        """
         raise NotImplementedError()
 
     def adjust_origin(self):
+        """
+        Examine the terminal to find where it should place the top
+        left pixel of an image in order to fit in with the normal text
+        flow.
+
+        This is an invasive procedure that involves changing the
+        terminal attributes and printing to STDOUT and STDIN.
+
+        STDIN and STDOUT must be connected to a terminal of some sort
+        or else this method will fail.
+        """
         self._origin = self.probe_cursor_pos()
 
     def need_repaint(self, pixels, x, y):
+        """
+        Return True if the pixels at (x, y) or (x, y + 1) needs to be
+        redrawn.
+        """
         if pixels[x][y] != self._prev_frame[x][y]:
             return True
         elif pixels[x][y + 1] != self._prev_frame[x][y + 1]:
@@ -96,6 +126,10 @@ class Shell(shellpic.Formatter):
             return False
 
     def color(self, pixels, dispose, x, y):
+        """
+        Return the color at (x, y) taking into account previous frames
+        and dispose.
+        """
         rgba = pixels[x][y]
         if rgba[3] == 0:
             if dispose:
@@ -173,6 +207,11 @@ class Shell(shellpic.Formatter):
         return file_str.getvalue()
 
 class Shell8bit(Shell):
+    """
+    A formatter designed for terminals capable of showing 256-colors
+    (e.g. xterm and gnome-terminal).
+
+    """
     def __init__(self):
         super(Shell8bit, self).__init__()
 
@@ -183,6 +222,12 @@ class Shell8bit(Shell):
 
     @staticmethod
     def color_value_8bit(r, g, b, a=255):
+        """
+        Return the terminal color value corresponding to the r, g, b,
+        parameters.
+
+        The returned value can be passed to colorcode().
+        """
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) / 40 if r > 55 else 0
         g = (g - 55) / 40 if g > 55 else 0
@@ -192,6 +237,10 @@ class Shell8bit(Shell):
         return code
 
 class Shell24Bit(Shell):
+    """
+    A formatter for terminals capable of displaying colors with a
+    depth of 24 bits (e.g. terminal).
+    """
     def __init__(self):
         super(Shell24Bit, self).__init__()
 
