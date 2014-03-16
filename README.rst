@@ -6,7 +6,7 @@ Shellpic uses escape codes to display images in a terminal or irc-client.
 
 Examples
 --------
-    .. image:: img/shell8.png
+    .. image:: https://raw.github.com/larsjsol/shellpic/master/img/shell8.png
         :alt: Lenna displayed with a color depth of 8 bits.
 
 Running ``shellpic <image>`` in a terminal that supports 256-colors
@@ -16,14 +16,14 @@ If you happen to have a terminal that is capable of showing true
 colors, you can use the ``--shell24``-switch to enable 24bit output.
 It will look something like this:
 
-    .. image:: img/shell24.png
+    .. image:: https://raw.github.com/larsjsol/shellpic/master/img/shell24.png
         :alt: Lenna displayed with a color depth of 24 bits.
 
 Shellpic can also be used with irc-clients. Run the script from your
 client and use the ``--irc``-switch, the result will depend on the
 client used. This is how it looks in xchat:
 
-    .. image:: img/irc.png
+    .. image:: https://raw.github.com/larsjsol/shellpic/master/img/irc.png
         :alt: Lenna displayed in 16 colors by xchat.
 
 Use the ``--animate`` (show the animation once, then exit) or
@@ -31,7 +31,7 @@ Use the ``--animate`` (show the animation once, then exit) or
 noticable difference between between terminals of how smooth 
 the animation looks. KDE's ``terminal`` seems to handle it well.
 
-    .. image:: img/imp_shell24.gif
+    .. image:: https://raw.github.com/larsjsol/shellpic/master/img/imp_shell24.gif
         :alt: An animated gif shown in a terminal.
 
 Installation
@@ -59,6 +59,4 @@ If you do not have PIP or want the bleeding edge version of Shellpic:
 
 Changelog
 ---------
-See `CHANGES.rst <CHANGES.rst>`_
-
-.. include:: CHANGES.rst
+See `CHANGES.rst <https://raw.github.com/larsjsol/shellpic/master/CHANGES.rst>`_
