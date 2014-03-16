@@ -38,6 +38,7 @@ def main():
                         help="Animate the image and loop indefinetly")
     args = parser.parse_args()    
 
+
     # create the right kind of 'Formatter'
     if args.irc:
         formatter = shellpic.Irc()
@@ -46,7 +47,7 @@ def main():
     else:
         formatter = shellpic.Shell8bit()
     dimentions = formatter.dimentions()
-    
+
     # load the image
     if args.image == '-':
         # we need to copy the entire image to a buffer as PIL likes to seek()
@@ -54,8 +55,7 @@ def main():
         buf.write(sys.stdin.read())
         buf.seek(0)
         img = Image.open(buf)
-        img.load() # so we can safely close buf
-        buf.close()
+        img.load() 
     else:
         try:
             img = Image.open(args.image)
@@ -70,7 +70,6 @@ def main():
         frame_delay = img.info['duration']
     else:
         frame_delay = 0
-
 
     # extract the frames for animation
     dispose_frames = []    
@@ -111,7 +110,6 @@ def main():
             # how is this possible? This exception should be cought in scale()
             pass # FIXME do something smart
 
-
     # convert the image to RGBA, this must be done after any
     # resizing to prevent artifacts
     for i in range(len(frames)):
@@ -120,25 +118,19 @@ def main():
         if dispose_frames[i]:
             dispose_frames[i] = dispose_frames[i].convert('RGBA')
 
-
-
     # print the image as an animation
     if args.animate or args.loop:
         try:
             delay = float(frame_delay) / 1000
-            print formatter.clear_screen().encode('utf-8'),
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
-                    print formatter.move_cursor(0, 0).encode('utf-8'),
                     print formatter.format(frame, dispose).encode('utf-8'),
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
                     break
         except KeyboardInterrupt:
-            print formatter.clear_screen().encode('utf-8')
-            print formatter.move_cursor(0, 0).encode('utf-8')
             print formatter.format(frame, dispose).encode('utf-8')
             
         except NotImplementedError:

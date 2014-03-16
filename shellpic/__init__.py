@@ -42,3 +42,12 @@ def ensure_rgb(palette, pixel):
 
 def palette_lookup(palette, index):
     return ord(palette.palette[3 * index]), ord(palette.palette[(3 * index) + 1]), ord(palette.palette[(3 * index) + 2])
+
+
+def pixels(image):
+    """
+    Return the pixel values from an Image as a two-dimetnional list.
+    """
+    width, height = image.size
+    data = list(image.getdata())
+    return [[data[(y * width) + x] for y in range(height)] for x in range(width)]

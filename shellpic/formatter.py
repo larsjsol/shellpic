@@ -8,6 +8,7 @@
 class Formatter(object):
     def __init__(self):
         super(Formatter, self).__init__()
+        self._origin = (0, 0) # cursor position where we put the upper left pixel
 
     def format(self, image, dispose=None):
         raise NotImplementedError()
@@ -16,8 +17,7 @@ class Formatter(object):
     def dimentions():
         raise NotImplementedError()
 
-    @staticmethod
-    def move_cursor(pos_x, pos_y):
+    def move_cursor(self, pos_x, pos_y):
         raise NotImplementedError()
 
     @staticmethod
