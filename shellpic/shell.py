@@ -273,6 +273,25 @@ class Shell4Bit(Shell):
         (255, 255, 255), # 15 white
         )
 
+    weights = (
+        1,       #  0 black
+        1,     #  1 red3
+        1,     #  2 green3
+        1,   #  3 yellow3
+        1,     #  4 blue3
+        1,   #  5 magenta3
+        1,   #  6 cyan
+        0.5, #  7 gray90
+        0.5,    #  8 gray30
+        1,     #  9 red
+        1,     # 10 green
+        1,   # 11 yellow
+        1,     # 12 blue
+        1,   # 13 magenta
+        1,   # 14 cyan
+        1, # 15 white
+        )
+
     def __init__(self):
         super(Shell4Bit, self).__init__()
 
@@ -281,6 +300,8 @@ class Shell4Bit(Shell):
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])
         distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(cls.palette)]
+        for d in distances:
+            d[0] /= cls.weights[d[1]]
         distances.sort(key=lambda x: x[0])
         code = distances[0][1]
         code = 30 + code if code < 8 else 82 + code
