@@ -35,7 +35,7 @@ class Formatter(object):
 
     def move_cursor(self, pos_x, pos_y):
         """
-        Return a string containg the command to move the cursor to a
+        Return a string containing the command to move the cursor to a
         position.
         """
         raise NotImplementedError()
@@ -59,7 +59,7 @@ class Formatter(object):
     @staticmethod
     def clear_screen():
         """
-        Return a string containing a command to cleare the drawing
+        Return a string containing a command to clear the drawing
         area.
         """
         raise NotImplementedError()
