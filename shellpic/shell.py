@@ -291,22 +291,22 @@ class Shell4Bit(Shell):
         )
 
     weights = (
-        1,       #  0 black
-        1,     #  1 red3
-        1,     #  2 green3
-        1,   #  3 yellow3
+        0.05,       #  0 black
+        0.25,     #  1 red3
+        1.2,     #  2 green3
+        0.5,   #  3 yellow3
         1,     #  4 blue3
-        1,   #  5 magenta3
+        0.5,   #  5 magenta3
         1,   #  6 cyan
-        0.5, #  7 gray90
-        0.5,    #  8 gray30
-        1,     #  9 red
+        0.12, #  7 gray90
+        0.12,    #  8 gray30
+        0.5,     #  9 red
         1,     # 10 green
-        1,   # 11 yellow
-        1,     # 12 blue
-        1,   # 13 magenta
-        1,   # 14 cyan
-        1, # 15 white
+        0.75,   # 11 yellow
+        1.25,     # 12 blue
+        0.75,   # 13 magenta
+        1.5,   # 14 cyan
+        0.5, # 15 white
         )
 
     def __init__(self):
