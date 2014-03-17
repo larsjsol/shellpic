@@ -26,7 +26,7 @@ class Formatter(object):
         raise NotImplementedError()
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         """
         Return a hint to the maximum image size suitable for this
         formatter.
