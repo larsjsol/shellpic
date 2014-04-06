@@ -4,3 +4,5 @@
 dist
 build
 MANIFEST
+Shellpic.egg-info
+tests/workdir
