@@ -1,6 +1,12 @@
 Version History
 ===============
 
+v1.3, 2014-04-06
+  * Support for 16-color terminals (``--shell4``).
+  * Slightly smoother animations.
+  * Only list ``Pillow`` as a dependency. The traditional ``PIL``
+    might still work, but it will not be tested against.
+
 v1.2.2, 2014-03-16
   * Make animations appear in the normal text flow.
   * Fix problem where animations would sometimes 'jump'.

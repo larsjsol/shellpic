@@ -36,9 +36,8 @@ the animation looks. KDE's ``konsole`` seems to handle it well.
 
 Installation
 ------------
-You should have PIL_ (>=1.1.7) or Pillow_ (>=1.0) installed. Shellpic is tested with Python 2.7.
+You should have Pillow_ (>=1.0) installed. Shellpic is tested with Python 2.7.
 
-.. _PIL: https://pypi.python.org/pypi/PIL
 .. _Pillow: https://pypi.python.org/pypi/Pillow
 
 If you have PIP installed:
