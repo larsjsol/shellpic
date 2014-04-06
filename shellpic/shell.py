@@ -221,20 +221,20 @@ class Shell(shellpic.Formatter):
         file_str.write(chr(27) + u"[0m")
         return file_str.getvalue()
 
-class Shell8bit(Shell):
+class Shell8Bit(Shell):
     """
     A formatter designed for terminals capable of showing 256-colors
     (e.g. xterm and gnome-terminal).
 
     """
     def __init__(self):
-        super(Shell8bit, self).__init__()
+        super(Shell8Bit, self).__init__()
 
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), Shell8bit.color_value_8bit(*bgcolor),
-                                                 Shell8bit.color_value_8bit(*fgcolor), chr(8))
+        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), Shell8Bit.color_value_8bit(*bgcolor),
+                                                 Shell8Bit.color_value_8bit(*fgcolor), chr(8))
 
     @staticmethod
     def color_value_8bit(r, g, b, a=255):

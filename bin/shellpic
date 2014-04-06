@@ -11,8 +11,7 @@ import cStringIO
 import time
 import cProfile
 
-import shellpic
-
+from shellpic import *
 
 def main():    
     # parse command line parameters
@@ -20,20 +19,23 @@ def main():
     parser.add_argument("image", help="Use '-' to read from STDIN")
     parser.add_argument("--version", action="version", version="Version: " + shellpic.VERSION,
                         help="Print verions number and exit.")
-    parser.add_argument("--shell4", action="store_true",
+
+    parser.add_argument("--shell4", action="store_const", const=Shell4Bit, dest='formatter_class',
                         help="Print text suitable for a shell capable of displaying 16 colors")
-    parser.add_argument("--shell8", action="store_true", 
+    parser.add_argument("--shell8", action="store_const", const=Shell8Bit, dest='formatter_class',
                         help="Print text suitable for a shell capable of displaying 8bit colors (default)")
-    parser.add_argument("--shell24", action="store_true", 
+    parser.add_argument("--shell24", action="store_const", const=Shell24Bit, dest='formatter_class', 
                         help="Print text suitable for a shell capable of displaying 24bit colors")
-    parser.add_argument("--irc", action="store_true", 
+    parser.add_argument("--irc", action="store_const", const=Irc, dest='formatter_class', 
                         help="Print text suitable for piping to an irc client")
+
     parser.add_argument("--no-scale", action="store_true",
                         help="Do not attempt to scale the image to fit the terminal")
     parser.add_argument("--scale-x", nargs=1, type=int,
                         help="Scale the image to this width")
     parser.add_argument("--scale-y", nargs=1, type=int,
                         help="Scale the image to this height")
+
     parser.add_argument("--animate", action="store_true", 
                         help="Animate the image once")
     parser.add_argument("--loop", action="store_true", 
@@ -41,15 +43,14 @@ def main():
     args = parser.parse_args()    
 
 
+
+
     # create the right kind of 'Formatter'
-    if args.irc:
-        formatter = shellpic.Irc()
-    elif args.shell24:
-        formatter = shellpic.Shell24Bit()
-    elif args.shell4:
-        formatter = shellpic.Shell4Bit()
+    if args.formatter_class:
+        formatter = args.formatter_class()
     else:
-        formatter = shellpic.Shell8bit()
+        formatter = Shell8Bit()
+
     dimentions = formatter.dimentions()
 
     # load the image
