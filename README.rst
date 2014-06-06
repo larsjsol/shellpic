@@ -2,7 +2,7 @@ Shellpic
 ========
 -ASCII-art is so 2013.
 
-Shellpic uses escape codes to display images in a terminal or irc-client.
+Shellpic uses escape codes to display images in a terminal, IRC or NUTS client.
 
 Examples
 --------
@@ -25,6 +25,8 @@ client used. This is how it looks in xchat:
 
     .. image:: https://raw.github.com/larsjsol/shellpic/master/img/irc.png
         :alt: Lenna displayed in 16 colors by xchat.
+
+The ``--nuts``-switch will do the same, but for NUTS talkers.
 
 Use the ``--animate`` (show the animation once, then exit) or
 ``--loop`` (animate and loop forever) to animate gifs. There is a
