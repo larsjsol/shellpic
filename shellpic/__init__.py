@@ -11,7 +11,7 @@ from irc import *
 from nuts import *
 
 import PIL
-import collections
+from collections import *
 
 VERSION = "1.3"
 
