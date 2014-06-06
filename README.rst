@@ -43,6 +43,7 @@ the animation looks. KDE's ``konsole`` seems to handle it well.
 Installation
 ------------
 You should have Pillow_ (>=1.0) installed. Shellpic is tested with Python 2.7.
+It might work with Python 2.6, but it surely won't with Python 2.5.
 
 .. _Pillow: https://pypi.python.org/pypi/Pillow
 
