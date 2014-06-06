@@ -26,7 +26,11 @@ client used. This is how it looks in xchat:
     .. image:: https://raw.github.com/larsjsol/shellpic/master/img/irc.png
         :alt: Lenna displayed in 16 colors by xchat.
 
-The ``--nuts``-switch will do the same, but for NUTS talkers.
+The ``--nuts``-switch will do the same, but for NUTS talkers. This is how it looks
+in konsole:
+
+    .. image:: img/nuts.png
+        :alt: Farnsworth and imp displayed in 16 colors in a NUTS talker
 
 Use the ``--animate`` (show the animation once, then exit) or
 ``--loop`` (animate and loop forever) to animate gifs. There is a
