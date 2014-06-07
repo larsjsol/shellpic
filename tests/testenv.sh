@@ -10,7 +10,6 @@ cd $(dirname $0)
 # set up the envioronment
 mkdir -p workdir
 rm -rf workdir/* # ensure that we start with a clean slate
-mkdir -p workdir/tmp
 virtualenv workdir
 source workdir/bin/activate
 

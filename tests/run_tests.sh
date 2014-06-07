@@ -4,4 +4,6 @@
 cd $(dirname $0)
 
 ./testenv.sh
+
+source workdir/bin/activate
 ./integration_tests.sh

@@ -2,7 +2,6 @@
 # -*- coding: utf-8; mode: Shell-script -*-
 
 cd $(dirname $0)
-source workdir/bin/activate
 
 TESTS=0
 TESTS_OK=0
@@ -11,12 +10,12 @@ compare_output() {
     command=$1
     expected_output=$2
     tmpfile=workdir/tmp/$(basename $expected_output)
+    
+    TESTS=$((TESTS+1))
 
     /bin/echo -n "Comparing \"$command\" with $expected_output ... "
-    $command > $tmpfile
+    $command > $tmpfile    
     if diff $tmpfile $expected_output > /dev/null; 
-
-    TESTS=$((TESTS+1))
     then
         echo "OK!"
         TESTS_OK=$((TESTS_OK+1))
@@ -26,6 +25,8 @@ compare_output() {
         return 1
     fi
 }
+
+mkdir -p workdir/tmp
 
 compare_output "shellpic --scale-x 20 --scale-y 20 --shell4 ../img/Lenna.png" "output/lenna_shell4.txt"
 compare_output "shellpic --scale-x 20 --scale-y 20 --shell8 ../img/Lenna.png" "output/lenna_shell8.txt"
@@ -42,7 +43,7 @@ then
     true
 else
     echo
-    echo $((TEST-TESTS_OK))/$TESTS tests failed!
+    echo $((TESTS-TESTS_OK))/$TESTS tests failed!
     echo
     false
 fi
