@@ -144,6 +144,7 @@ def main():
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
+                    print()
                     break
         except KeyboardInterrupt:
             if sys.version_info[0] == 3:
