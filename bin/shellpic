@@ -7,6 +7,7 @@
 
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
 
 import argparse
 import sys
@@ -136,13 +137,19 @@ def main():
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
-                    print(formatter.format(frame, dispose), end='')
+                    if sys.version_info[0] == 3:
+                        print(formatter.format(frame, dispose), end='')
+                    else:
+                        print(formatter.format(frame, dispose).encode('utf-8'), end='')
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
                     break
         except KeyboardInterrupt:
-            print(formatter.format(frame, dispose))
+            if sys.version_info[0] == 3:
+                print(formatter.format(frame, dispose))
+            else:
+                print(formatter.format(frame, dispose).encode('utf-8'))
             
         except NotImplementedError:
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
