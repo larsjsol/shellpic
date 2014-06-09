@@ -4,12 +4,16 @@
 #
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
+
+from __future__ import print_function
+from __future__ import division
+
 import argparse
-from PIL import Image
 import sys
-import cStringIO
+import io
 import time
-import cProfile
+
+from PIL import Image
 
 from shellpic import *
 
@@ -58,7 +62,7 @@ def main():
     # load the image
     if args.image == '-':
         # we need to copy the entire image to a buffer as PIL likes to seek()
-        buf = cStringIO.StringIO()
+        buf = io.StringIO()
         buf.write(sys.stdin.read())
         buf.seek(0)
         img = Image.open(buf)
@@ -66,8 +70,7 @@ def main():
     else:
         try:
             img = Image.open(args.image)
-        except IOError:
-            _, excp, _ = sys.exc_info()
+        except IOError as ecxp:
             sys.stderr.write(str(excp) + '\n')
             exit(1)
 
@@ -129,24 +132,24 @@ def main():
     # print the image as an animation
     if args.animate or args.loop:
         try:
-            delay = float(frame_delay) / 1000
+            delay = frame_delay / 1000
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
-                    print formatter.format(frame, dispose).encode('utf-8'),
+                    print(formatter.format(frame, dispose).encode('utf-8'), end='')
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
                     break
         except KeyboardInterrupt:
-            print formatter.format(frame, dispose).encode('utf-8')
+            print(formatter.format(frame, dispose).encode('utf-8'))
             
         except NotImplementedError:
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
             exit(1)
     else:
         # or print the resutl to STDOUT
-        print formatter.format(frames[0]).encode('utf-8')
+        print(formatter.format(frames[0]).encode('utf-8'))
 
 
 if __name__ == "__main__":

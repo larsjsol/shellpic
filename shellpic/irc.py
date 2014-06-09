@@ -5,9 +5,11 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
+from __future__ import division
+
 from shellpic.formatter import Formatter
 
-import StringIO
+import io
 
 class Irc(Formatter):
     """
@@ -73,7 +75,7 @@ class Irc(Formatter):
         width, height = image.size
         pixels = [self.color(*p) for p in image.getdata()]
 
-        file_str = StringIO.StringIO()
+        file_str = io.StringIO()
 
         yrange = height if height % 2 == 0 else height - 1
         for y in range(0, yrange, 2):

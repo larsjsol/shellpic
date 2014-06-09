@@ -5,10 +5,13 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
-from formatter import *
-from shell import *
-from irc import *
-from nuts import *
+from __future__ import absolute_import
+from __future__ import division
+
+from .formatter import *
+from .shell import *
+from .irc import *
+from .nuts import *
 
 import PIL
 from collections import Sequence
@@ -25,9 +28,9 @@ def scale(image, width, height):
     scaleheight = 1
 
     if imgwidth > width:
-        scalewidth = float(width) / (imgwidth + 2)
+        scalewidth = width / (imgwidth + 2)
     if imgheight > height * 2:
-        scaleheight = float((height - 1) * 2) / imgheight
+        scaleheight = ((height - 1) * 2) / imgheight
     scale = min(scaleheight, scalewidth)
 
     try:

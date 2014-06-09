@@ -5,10 +5,13 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
+from __future__ import print_function
+from __future__ import division
+
 import shellpic
 
 import os
-import StringIO
+import io
 import termios
 import sys
 import re
@@ -70,7 +73,7 @@ class Shell(shellpic.Formatter):
         termios.tcsetattr(sys.stdin, termios.TCSANOW, new_attrs)
 
         # ask for the cursor position
-        print chr(27) +'[6n',
+        print(chr(27) +'[6n', end='')
         # read the response from the terminal
         response = ''
         while True:
@@ -161,7 +164,7 @@ class Shell(shellpic.Formatter):
         if dispose:
             assert dispose.mode == 'RGBA'
 
-        file_str = StringIO.StringIO()
+        file_str = io.StringIO()
 
         width, height = image.size
         # since we put two pixels on top of each other in each character position
@@ -170,7 +173,7 @@ class Shell(shellpic.Formatter):
 
         if not self._prev_frame:
             # create some empty space to draw on
-            file_str.write('\n' * (padded_height / 2))
+            file_str.write('\n' * (padded_height // 2))
 
             # find out where we shold put the top left pixel if we are
             # in a terminal. Just use (0, 0) if we are piping to or
@@ -178,8 +181,8 @@ class Shell(shellpic.Formatter):
             if os.isatty(sys.stdin.fileno()) and os.isatty(sys.stdout.fileno()):
                 x, y = self.probe_cursor_pos()
                 term_width, term_height = self.dimentions()
-                if y + (padded_height / 2) > term_height:
-                    adjust = (y + (padded_height / 2)) - term_height
+                if y + (padded_height // 2) > term_height:
+                    adjust = (y + (padded_height // 2)) - term_height
                     self._origin = x, y - adjust
                 else:
                     self._origin = x, y
@@ -214,7 +217,7 @@ class Shell(shellpic.Formatter):
         for y in range(0, height - 1, 2):
             for x in range(0, width):
                 if self.need_repaint(pixels, x, y):
-                    file_str.write(self.move_cursor(x, y / 2))
+                    file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, y),
                                                   self.color(pixels, dispose_pixels, x, y + 1)))
         file_str.write(self.move_cursor(width, padded_height / 2))
@@ -245,9 +248,9 @@ class Shell8Bit(Shell):
         The returned value can be passed to colorcode().
         """
         # basically the opposite of what is done in 256colres.pl from the xterm source
-        r = (r - 55) / 40 if r > 55 else 0
-        g = (g - 55) / 40 if g > 55 else 0
-        b = (b - 55) / 40 if b > 55 else 0
+        r = (r - 55) // 40 if r > 55 else 0
+        g = (g - 55) // 40 if g > 55 else 0
+        b = (b - 55) // 40 if b > 55 else 0
         code = 16 + (r * 36) + (g * 6) + b
 
         return code
@@ -328,4 +331,4 @@ class Shell4Bit(Shell):
     @memoize
     def colorcode(bgcolor, fgcolor):
         return u"{0}[{1};{2}m▄ ".format(chr(27), Shell4Bit.color_value_4bit(*bgcolor) + 10, 
-                                     Shell4Bit.color_value_4bit(*fgcolor))
+                                        Shell4Bit.color_value_4bit(*fgcolor))

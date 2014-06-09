@@ -6,9 +6,11 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
+from __future__ import division
+
 from shellpic.formatter import Formatter
 
-import StringIO
+import io
 
 class Nuts(Formatter):
     """
@@ -45,7 +47,7 @@ class Nuts(Formatter):
         "~RS~FY",    # brown
         "~RS~FM",    # purple
         "~RS~OL~FR", # orange
-        "~RS~OL~FY", # yellow 
+        "~RS~OL~FY", # yellow
         "~RS~OL~FG", # light green
         "~RS~FC",    # teal
         "~RS~OL~FC", # light cyan
@@ -94,7 +96,7 @@ class Nuts(Formatter):
         width, height = image.size
         pixels = [self.color(*p) for p in image.getdata()]
 
-        file_str = StringIO.StringIO()
+        file_str = io.StringIO()
 
         yrange = height if height % 2 == 0 else height - 1
         for y in range(0, yrange, 2):
