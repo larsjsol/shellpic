@@ -136,20 +136,20 @@ def main():
             while True:
                 for frame, dispose in zip(frames, dispose_frames):
                     start = time.time()
-                    print(formatter.format(frame, dispose).encode('utf-8'), end='')
+                    print(formatter.format(frame, dispose), end='')
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
                     break
         except KeyboardInterrupt:
-            print(formatter.format(frame, dispose).encode('utf-8'))
+            print(formatter.format(frame, dispose))
             
         except NotImplementedError:
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
             exit(1)
     else:
         # or print the resutl to STDOUT
-        print(formatter.format(frames[0]).encode('utf-8'))
+        print(formatter.format(frames[0]))
 
 
 if __name__ == "__main__":

@@ -70,41 +70,48 @@ class Shell(shellpic.Formatter):
         # disable echo and make sure input is sent char-by-char
         new_attrs[3] &= ~termios.ECHO
         new_attrs[3] &= ~termios.ICANON
-        termios.tcsetattr(sys.stdin, termios.TCSANOW, new_attrs)
 
-        # ask for the cursor position
-        print(chr(27) +'[6n', end='')
-        # read the response from the terminal
-        response = ''
-        while True:
-            char = sys.stdin.read(1)
-            response += char
-            if char == 'R':
-                break
+        x, y = u'1', u'1'
+        try:
+            termios.tcsetattr(sys.stdin, termios.TCSANOW, new_attrs)
 
-        # restore terminal attributes
-        termios.tcsetattr(sys.stdin, termios.TCSANOW, old_attrs)
+            # ask for the cursor position
+            print(chr(27) + u'[6n', end='')
+            sys.stdout.flush()
+            # read the response from the terminal
+            response = u''
+            while True:
+                char = sys.stdin.read(1)
+                response += char
+                print(char)
+                if char == u'R':
+                    break
 
-        # parse the response and return
-        m = re.match(r'\033\[(\d+);(\d+)R', response)
-        y, x = m.groups()
+            # parse the response and return
+            m = re.match(r'\033\[(\d+);(\d+)R', response)
+            y, x = m.groups()
+
+        finally:
+            # restore terminal attributes
+            termios.tcsetattr(sys.stdin, termios.TCSANOW, old_attrs)
+
         return [int(x) - 1, int(y) - 1]
 
     def move_cursor(self,  pos_x, pos_y):
-        return "{0}[{1};{2}f".format(chr(27), self._origin[1] + pos_y,
+        return u"{0}[{1};{2}f".format(chr(27), self._origin[1] + pos_y,
                                   self._origin[0] + pos_x)
 
     @staticmethod
     def save_cursor():
-        return "{0}[s".format(chr(27))
+        return u"{0}[s".format(chr(27))
 
     @staticmethod
     def restore_cursor():
-        return "{0}[r".format(chr(27))
+        return u"{0}[r".format(chr(27))
 
     @staticmethod
     def clear_screen():
-        return "[{0}[2J".format(chr(27))
+        return u"[{0}[2J".format(chr(27))
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
@@ -173,7 +180,7 @@ class Shell(shellpic.Formatter):
 
         if not self._prev_frame:
             # create some empty space to draw on
-            file_str.write('\n' * (padded_height // 2))
+            file_str.write(u'\n' * (padded_height // 2))
 
             # find out where we shold put the top left pixel if we are
             # in a terminal. Just use (0, 0) if we are piping to or
