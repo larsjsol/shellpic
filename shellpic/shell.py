@@ -230,7 +230,7 @@ class Shell(shellpic.Formatter):
                     file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, y),
                                                   self.color(pixels, dispose_pixels, x, y + 1)))
-        file_str.write(self.move_cursor(width, padded_height / 2))
+        file_str.write(self.move_cursor(width, padded_height // 2))
         file_str.write(chr(27) + u"[0m")
         return file_str.getvalue()
 
