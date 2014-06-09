@@ -16,7 +16,7 @@ from .nuts import *
 import PIL
 from collections import Sequence
 
-VERSION = "1.4"
+VERSION = "1.4.1"
 
 def scale(image, width, height):
     """

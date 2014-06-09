@@ -5,13 +5,15 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
+from __future__ import unicode_literals
+
 from distutils.core import setup
 import pkg_resources
 
 setup(
     name='Shellpic',
-    version='1.4',
-    author=u'Lars Jørgen Solberg',
+    version='1.4.1',
+    author='Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
     scripts=['bin/shellpic'],
@@ -28,8 +30,12 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
         "Topic :: Artistic Software",
         "Topic :: Games/Entertainment",
         "Topic :: Multimedia :: Graphics",
