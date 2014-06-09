@@ -157,9 +157,9 @@ def main():
     else:
         # or print the result to STDOUT        
         if sys.version_info[0] == 3:
-            print(formatter.format(frame, dispose))
+            print(formatter.format(frames[0]))
         else:
-            print(formatter.format(frame, dispose).encode('utf-8'))
+            print(formatter.format(frames[0]).encode('utf-8'))
 
 
 if __name__ == "__main__":
