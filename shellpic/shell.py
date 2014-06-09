@@ -88,20 +88,20 @@ class Shell(shellpic.Formatter):
         return [int(x) - 1, int(y) - 1]
 
     def move_cursor(self,  pos_x, pos_y):
-        return "{}[{};{}f".format(chr(27), self._origin[1] + pos_y,
+        return "{0}[{1};{2}f".format(chr(27), self._origin[1] + pos_y,
                                   self._origin[0] + pos_x)
 
     @staticmethod
     def save_cursor():
-        return "{}[s".format(chr(27))
+        return "{0}[s".format(chr(27))
 
     @staticmethod
     def restore_cursor():
-        return "{}[r".format(chr(27))
+        return "{0}[r".format(chr(27))
 
     @staticmethod
     def clear_screen():
-        return "[{}[2J".format(chr(27))
+        return "[{0}[2J".format(chr(27))
 
     @classmethod
     def colorcode(cls, bgcolor, fgcolor):
@@ -233,8 +233,8 @@ class Shell8Bit(Shell):
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{}[48;5;{};38;5;{}m{}▄ ".format(chr(27), Shell8Bit.color_value_8bit(*bgcolor),
-                                                 Shell8Bit.color_value_8bit(*fgcolor), chr(8))
+        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), Shell8Bit.color_value_8bit(*bgcolor),
+                                                     Shell8Bit.color_value_8bit(*fgcolor), chr(8))
 
     @staticmethod
     def color_value_8bit(r, g, b, a=255):
@@ -263,8 +263,8 @@ class Shell24Bit(Shell):
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{}[48;2;{};{};{};38;2;{};{};{}m{}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
-                                                            fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
+        return u"{0}[48;2;{1};{2};{3};38;2;{4};{5};{6}m{7}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
+                                                                     fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
 
 class Shell4Bit(Shell):
     """
@@ -327,5 +327,5 @@ class Shell4Bit(Shell):
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{}[{};{}m▄ ".format(chr(27), Shell4Bit.color_value_4bit(*bgcolor) + 10, 
+        return u"{0}[{1};{2}m▄ ".format(chr(27), Shell4Bit.color_value_4bit(*bgcolor) + 10, 
                                      Shell4Bit.color_value_4bit(*fgcolor))

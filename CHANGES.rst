@@ -3,6 +3,7 @@ Version History
 
 v1.4, 2014-06-04
   * Support for NUTS talkers (``--nuts``).
+  * Support for Python 2.6
 
 v1.3, 2014-04-06
   * Support for 16-color terminals (``--shell4``).
