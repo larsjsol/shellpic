@@ -1,7 +1,7 @@
 Version History
 ===============
 
-v1.4, 2014-06-04
+v1.4, 2014-06-09
   * Support for NUTS talkers (``--nuts``).
   * Support for Python 2.6
 
