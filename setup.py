@@ -5,8 +5,6 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
-from __future__ import unicode_literals
-
 from distutils.core import setup
 import pkg_resources
 
