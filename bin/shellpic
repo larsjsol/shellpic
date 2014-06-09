@@ -155,8 +155,11 @@ def main():
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
             exit(1)
     else:
-        # or print the resutl to STDOUT
-        print(formatter.format(frames[0]))
+        # or print the result to STDOUT        
+        if sys.version_info[0] == 3:
+            print(formatter.format(frame, dispose))
+        else:
+            print(formatter.format(frame, dispose).encode('utf-8'))
 
 
 if __name__ == "__main__":
