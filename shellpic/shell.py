@@ -7,6 +7,7 @@
 
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
 
 import shellpic
 
@@ -71,19 +72,20 @@ class Shell(shellpic.Formatter):
         new_attrs[3] &= ~termios.ECHO
         new_attrs[3] &= ~termios.ICANON
 
-        x, y = u'1', u'1'
         try:
             termios.tcsetattr(sys.stdin, termios.TCSANOW, new_attrs)
+            termios.tcsetattr(sys.stdout, termios.TCSANOW, new_attrs)
 
             # ask for the cursor position
-            print(chr(27) + u'[6n', end='')
-            sys.stdout.flush()
+            sys.stdout.write(chr(27) + u'[6n')
+            if sys.version_info[0] == 3:
+                sys.stdout.flush()
             # read the response from the terminal
             response = u''
+
             while True:
                 char = sys.stdin.read(1)
                 response += char
-                print(char)
                 if char == u'R':
                     break
 
@@ -94,6 +96,7 @@ class Shell(shellpic.Formatter):
         finally:
             # restore terminal attributes
             termios.tcsetattr(sys.stdin, termios.TCSANOW, old_attrs)
+            termios.tcsetattr(sys.stdout, termios.TCSANOW, old_attrs)
 
         return [int(x) - 1, int(y) - 1]
 
