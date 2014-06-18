@@ -98,7 +98,7 @@ class Shell(shellpic.Formatter):
             termios.tcsetattr(sys.stdin, termios.TCSANOW, old_attrs)
             termios.tcsetattr(sys.stdout, termios.TCSANOW, old_attrs)
 
-        return [int(x) - 1, int(y) - 1]
+        return [int(x) - 1, int(y)]
 
     def move_cursor(self,  pos_x, pos_y):
         return u"{0}[{1};{2}f".format(chr(27), self._origin[1] + pos_y,
