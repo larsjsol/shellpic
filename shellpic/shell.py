@@ -146,12 +146,17 @@ class Shell(shellpic.Formatter):
         Return True if the pixels at (x, y) or (x, y + 1) needs to be
         redrawn.
         """
-        if pixels[x][y] != self._prev_frame[x][y]:
+        if self.color_value(*pixels[x][y]) != self.color_value(*self._prev_frame[x][y]):
             return True
-        elif pixels[x][y + 1] != self._prev_frame[x][y + 1]:
+        elif self.color_value(*pixels[x][y + 1]) != self.color_value(*self._prev_frame[x][y + 1]):
             return True
         else:
             return False
+
+    @staticmethod
+    def color_value(r, g, b, a=255):
+        raise NotImplementedError()
+
 
     def color(self, pixels, dispose, x, y):
         """
@@ -226,10 +231,21 @@ class Shell(shellpic.Formatter):
         # draw the image
         for y in range(0, height - 1, 2):
             for x in range(0, width):
+                file_str.write(self.move_cursor(x, y // 2))
+                _cur_x = x
+                _cur_y = y
                 if self.need_repaint(pixels, x, y):
-                    file_str.write(self.move_cursor(x, y // 2))
+                    if not (_cur_x == x and _cur_y == y):
+                        file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, y),
                                                   self.color(pixels, dispose_pixels, x, y + 1)))
+                    _cur_x = x + 1
+                    _cur_y = y
+                else:
+                    # ugh, this is ugly! do this to update self._prev_frame
+                    self.color(pixels, dispose_pixels, x, y)
+                    self.color(pixels, dispose_pixels, x, y + 1)
+
         file_str.write(self.move_cursor(width, padded_height // 2))
         file_str.write(chr(27) + u"[0m")
         return file_str.getvalue()
@@ -246,11 +262,11 @@ class Shell8Bit(Shell):
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), Shell8Bit.color_value_8bit(*bgcolor),
-                                                     Shell8Bit.color_value_8bit(*fgcolor), chr(8))
+        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), Shell8Bit.color_value(*bgcolor),
+                                                     Shell8Bit.color_value(*fgcolor), chr(8))
 
     @staticmethod
-    def color_value_8bit(r, g, b, a=255):
+    def color_value(r, g, b, a=255):
         """
         Return the terminal color value corresponding to the r, g, b,
         parameters.
@@ -272,6 +288,11 @@ class Shell24Bit(Shell):
     """
     def __init__(self):
         super(Shell24Bit, self).__init__()
+
+    @staticmethod
+    def color_value(r, g, b, a=255):
+        return (r, g, b)
+
 
     @staticmethod
     @memoize
@@ -325,13 +346,13 @@ class Shell4Bit(Shell):
     def __init__(self):
         super(Shell4Bit, self).__init__()
 
-    @classmethod
-    def color_value_4bit(cls, r, g, b, a=255):
+    @staticmethod
+    def color_value(r, g, b, a=255):
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])
-        distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(cls.palette)]
+        distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(Shell4Bit.palette)]
         for d in distances:
-            d[0] /= cls.weights[d[1]]
+            d[0] /= Shell4Bit.weights[d[1]]
         distances.sort(key=lambda x: x[0])
         code = distances[0][1]
         code = 30 + code if code < 8 else 82 + code
@@ -340,5 +361,5 @@ class Shell4Bit(Shell):
     @staticmethod
     @memoize
     def colorcode(bgcolor, fgcolor):
-        return u"{0}[{1};{2}m▄ ".format(chr(27), Shell4Bit.color_value_4bit(*bgcolor) + 10, 
-                                        Shell4Bit.color_value_4bit(*fgcolor))
+        return u"{0}[{1};{2}m▄ ".format(chr(27), Shell4Bit.color_value(*bgcolor) + 10, 
+                                        Shell4Bit.color_value(*fgcolor))
