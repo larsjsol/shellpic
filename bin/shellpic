@@ -73,7 +73,7 @@ def main():
     else:
         try:
             img = Image.open(args.image)
-        except IOError as ecxp:
+        except IOError as excp:
             sys.stderr.write(str(excp) + '\n')
             exit(1)
 
