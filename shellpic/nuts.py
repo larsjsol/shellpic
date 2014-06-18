@@ -83,7 +83,7 @@ class Nuts(Formatter):
         super(Nuts, self).__init__()
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         return (78, 78) # guesstimation of how much room is normally available in a chatwindow
 
     def format(self, image, dispose=None):

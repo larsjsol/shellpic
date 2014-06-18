@@ -58,7 +58,7 @@ def main():
     else:
         formatter = Shell8Bit()
 
-    dimentions = formatter.dimentions()
+    dimensions = formatter.dimensions()
 
     # load the image
     if args.image == '-':
@@ -106,18 +106,18 @@ def main():
     # scale it to fit the terminal
     if not args.no_scale:
         if args.scale_x:
-            dimentions = [args.scale_x[0], dimentions[1]]
+            dimensions = [args.scale_x[0], dimensions[1]]
         if args.scale_y:
-            dimentions = [dimentions[0], args.scale_y[0]]
+            dimensions = [dimensions[0], args.scale_y[0]]
         
         # it seems like each frame must be resized individually 
         for i in range(len(frames)):
-            frames[i] = shellpic.scale(frames[i], *dimentions)
+            frames[i] = shellpic.scale(frames[i], *dimensions)
 
         try:
             for i in range(len(dispose_frames)):
                 if dispose_frames[i]:
-                    dispose_frames[i] = shellpic.scale(dispose_frames[i], *dimentions)
+                    dispose_frames[i] = shellpic.scale(dispose_frames[i], *dimensions)
         except ValueError:
             # how is this possible? This exception should be cought in scale()
             pass # FIXME do something smart

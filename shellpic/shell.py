@@ -43,7 +43,7 @@ class Shell(shellpic.Formatter):
         self._prev_frame = None
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         """
         Return the number of columns and rows in the current terminal.
         """
@@ -190,7 +190,7 @@ class Shell(shellpic.Formatter):
             # from files
             if os.isatty(sys.stdin.fileno()) and os.isatty(sys.stdout.fileno()):
                 x, y = self.probe_cursor_pos()
-                term_width, term_height = self.dimentions()
+                term_width, term_height = self.dimensions()
                 if y + (padded_height // 2) > term_height:
                     adjust = (y + (padded_height // 2)) - term_height
                     self._origin = x, y - adjust

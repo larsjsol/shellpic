@@ -62,7 +62,7 @@ class Irc(Formatter):
         super(Irc, self).__init__()
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         return (50, 50) # guesstimation of how much room is normally available in a chatwindow
 
     def format(self, image, dispose=None):
