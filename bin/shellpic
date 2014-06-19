@@ -35,6 +35,8 @@ def main():
                         help="Print text suitable for piping to an irc client")
     parser.add_argument("--nuts", action="store_const", const=Nuts, dest='formatter_class', 
                         help="Print text suitable for piping to a NUTS talker client")
+    parser.add_argument("--tinymux", action="store_const", const=Tinymux, dest='formatter_class', 
+                        help="Print text suitable for piping to a TinyMUX server")
 
     parser.add_argument("--no-scale", action="store_true",
                         help="Do not attempt to scale the image to fit the terminal")
