@@ -8,10 +8,12 @@
 from __future__ import absolute_import
 from __future__ import division
 
+from .frame import *
 from .formatter import *
 from .shell import *
 from .irc import *
 from .nuts import *
+
 
 import PIL
 from collections import Sequence

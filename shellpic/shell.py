@@ -40,6 +40,7 @@ class Shell(shellpic.Formatter):
     """
     def __init__(self):
         super(Shell, self).__init__()
+        self.frame = None
         self._prev_frame = None
 
     @staticmethod
@@ -117,7 +118,7 @@ class Shell(shellpic.Formatter):
         return u"[{0}[2J".format(chr(27))
 
     @classmethod
-    def colorcode(cls, bgcolor, fgcolor):
+    def color_string(cls, bgcolor, fgcolor):
         """
         Return a string for drawing two pixels where one is placed
         above the other. The top pixel will be the color bgcolor and
@@ -141,47 +142,42 @@ class Shell(shellpic.Formatter):
         """
         self._origin = self.probe_cursor_pos()
 
-    def need_repaint(self, pixels, x, y):
+    def need_repaint(self, x, y):
         """
         Return True if the pixels at (x, y) or (x, y + 1) needs to be
         redrawn.
         """
-        if self.color_value(*pixels[x][y]) != self.color_value(*self._prev_frame[x][y]):
+
+        # redraw if we have no information about the prev frame
+        if not self._prev_frame:
             return True
-        elif self.color_value(*pixels[x][y + 1]) != self.color_value(*self._prev_frame[x][y + 1]):
+
+        # redraw if any pixels have different color
+        if self.frame.pixels[x][y] != self._prev_frame.pixels[x][y]:
+            return True
+        elif self.frame.pixels[x][y + 1] != self._prev_frame.pixels[x][y + 1]:
             return True
         else:
             return False
+
+    def update_visible_pixel(self, x, y):
+        if self.frame[x][y] == None:
+            if not self._prev_frame:
+                self.frame[x][y] = self.color_value(0, 0, 0, 255) # fall back to black if no information is present
+            else:
+                self.frame[x][y] = self._prev_frame[x][y]
 
     @staticmethod
     def color_value(r, g, b, a=255):
         raise NotImplementedError()
 
 
-    def color(self, pixels, dispose, x, y):
-        """
-        Return the color at (x, y) taking into account previous frames
-        and dispose.
-        """
-        rgba = pixels[x][y]
-        if rgba[3] == 0:
-            if dispose:
-                rgba = dispose[x][y]
-            elif self._prev_frame:
-                rgba = self._prev_frame[x][y]
-            else:
-                rgba = (0, 0, 0, 255)
-        self._prev_frame[x][y] = rgba
-        return rgba
-
-    def format(self, image, dispose=None):
-        assert image.mode == 'RGBA'
-        if dispose:
-            assert dispose.mode == 'RGBA'
+    def format(self, frame):
+        self.frame = frame
 
         file_str = io.StringIO()
 
-        width, height = image.size
+        width, height = frame.image.size
         # since we put two pixels on top of each other in each character position
         # we must add a row for images with a odd numbered height
         padded_height = height if height % 2 == 0 else height + 1
@@ -202,53 +198,24 @@ class Shell(shellpic.Formatter):
                 else:
                     self._origin = x, y
 
-            # assume a black background
-            self._prev_frame = [[[0, 0, 0, 255] for y in range(padded_height)] for x in range(width)]
-
-
-
-        # put the pixels in a two-dimentional array
-        pixels = shellpic.pixels(image)
-        if padded_height != height:
-            for x in range(width):
-                pixels.append([0, 0, 0, 255])
-
-
-        # put the dispose in a two-dimentional array
-        if dispose:
-            try:
-                dispose_pixels = shellpic.pixels(dispose)
-            except AttributeError:
-                # i suppose things like are bound to happen when i depend on a undocumented property...
-                dispose_pixels = [[[0, 0, 0, 255] for y in range(height)] for x in range(width)]
-
-            if padded_height != height:
-                for x in range(width):
-                    dispose_pixels.append([0, 0, 0, 255])
-        else:
-            dispose_pixels = None
+        # convert the frame from RGBA to our colorspace
+        frame.convert_colors(self.color_value)
 
         # draw the image
         for y in range(0, height - 1, 2):
             for x in range(0, width):
-                file_str.write(self.move_cursor(x, y // 2))
-                _cur_x = x
-                _cur_y = y
-                if self.need_repaint(pixels, x, y):
-                    if not (_cur_x == x and _cur_y == y):
-                        file_str.write(self.move_cursor(x, y // 2))
-                    file_str.write(self.colorcode(self.color(pixels, dispose_pixels, x, y),
-                                                  self.color(pixels, dispose_pixels, x, y + 1)))
-                    _cur_x = x + 1
-                    _cur_y = y
-                else:
-                    # ugh, this is ugly! do this to update self._prev_frame
-                    self.color(pixels, dispose_pixels, x, y)
-                    self.color(pixels, dispose_pixels, x, y + 1)
+                self.update_visible_pixel(x, y)
+                self.update_visible_pixel(x, y + 1)
+                if self.need_repaint(x, y):
+                    file_str.write(self.move_cursor(x, y // 2))
+                    file_str.write(self.color_string(frame[x][y], frame[x][y + 1]))
 
         file_str.write(self.move_cursor(width, padded_height // 2))
         file_str.write(chr(27) + u"[0m")
+
+        self._prev_frame = frame # keep the current frame in case we need it as background
         return file_str.getvalue()
+
 
 class Shell8Bit(Shell):
     """
@@ -261,9 +228,8 @@ class Shell8Bit(Shell):
 
     @staticmethod
     @memoize
-    def colorcode(bgcolor, fgcolor):
-        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), Shell8Bit.color_value(*bgcolor),
-                                                     Shell8Bit.color_value(*fgcolor), chr(8))
+    def color_string(bgcolor, fgcolor):
+        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), bgcolor, fgcolor, chr(8))
 
     @staticmethod
     def color_value(r, g, b, a=255):
@@ -273,6 +239,9 @@ class Shell8Bit(Shell):
 
         The returned value can be passed to colorcode().
         """
+        if not a:
+            return None
+
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) // 40 if r > 55 else 0
         g = (g - 55) // 40 if g > 55 else 0
@@ -291,12 +260,15 @@ class Shell24Bit(Shell):
 
     @staticmethod
     def color_value(r, g, b, a=255):
-        return (r, g, b)
+        if not a:
+            return None
+        else:
+            return (r, g, b)
 
 
     @staticmethod
     @memoize
-    def colorcode(bgcolor, fgcolor):
+    def color_string(bgcolor, fgcolor):
         return u"{0}[48;2;{1};{2};{3};38;2;{4};{5};{6}m{7}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                                      fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
 
@@ -348,6 +320,9 @@ class Shell4Bit(Shell):
 
     @staticmethod
     def color_value(r, g, b, a=255):
+        if not a:
+            return None
+
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])
         distances = [[distance(p, [r, g, b]), i] for i, p in enumerate(Shell4Bit.palette)]
@@ -360,6 +335,5 @@ class Shell4Bit(Shell):
 
     @staticmethod
     @memoize
-    def colorcode(bgcolor, fgcolor):
-        return u"{0}[{1};{2}m▄ ".format(chr(27), Shell4Bit.color_value(*bgcolor) + 10, 
-                                        Shell4Bit.color_value(*fgcolor))
+    def color_string(bgcolor, fgcolor):
+        return u"{0}[{1};{2}m▄ ".format(chr(27), bgcolor + 10, fgcolor)

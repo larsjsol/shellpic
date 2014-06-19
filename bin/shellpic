@@ -84,24 +84,14 @@ def main():
         frame_delay = 0
 
     # extract the frames for animation
-    dispose_frames = []    
+    frames = [Frame(img)]
     if args.animate or args.loop:
-        frames = [img.copy()]
-
         while True:
             try:
-                if hasattr(img, 'dispose'):
-                    dispose_frames.append(img.dispose)
-                else:
-                    dispose_frames.append(None)
                 img.seek(img.tell() + 1)
-                frames.append(img.copy())
+                frames.append(Frame(img))
             except EOFError:
                 break
-    else:
-        frames = [img.copy()]
-        if hasattr(img, 'dispose'):
-            dispose_frames = [img.dispose]
 
     # scale it to fit the terminal
     if not args.no_scale:
@@ -110,37 +100,21 @@ def main():
         if args.scale_y:
             dimensions = [dimensions[0], args.scale_y[0]]
         
-        # it seems like each frame must be resized individually 
-        for i in range(len(frames)):
-            frames[i] = shellpic.scale(frames[i], *dimensions)
+        for f in frames:
+            f.scale(*dimensions)
 
-        try:
-            for i in range(len(dispose_frames)):
-                if dispose_frames[i]:
-                    dispose_frames[i] = shellpic.scale(dispose_frames[i], *dimensions)
-        except ValueError:
-            # how is this possible? This exception should be cought in scale()
-            pass # FIXME do something smart
-
-    # convert the image to RGBA, this must be done after any
-    # resizing to prevent artifacts
-    for i in range(len(frames)):
-        frames[i] = frames[i].convert('RGBA')
-    for i in range(len(dispose_frames)):
-        if dispose_frames[i]:
-            dispose_frames[i] = dispose_frames[i].convert('RGBA')
 
     # print the image as an animation
     if args.animate or args.loop:
         try:
             delay = frame_delay / 1000
             while True:
-                for frame, dispose in zip(frames, dispose_frames):
+                for frame in frames:
                     start = time.time()
                     if sys.version_info[0] == 3:
-                        print(formatter.format(frame, dispose), end='')
+                        print(formatter.format(frame), end='')
                     else:
-                        print(formatter.format(frame, dispose).encode('utf-8'), end='')
+                        print(formatter.format(frame).encode('utf-8'), end='')
                     done = time.time()
                     time.sleep(max(0.0 , delay - (done - start)))
                 if not args.loop:
@@ -148,9 +122,9 @@ def main():
                     break
         except KeyboardInterrupt:
             if sys.version_info[0] == 3:
-                print(formatter.format(frame, dispose))
+                print(formatter.format(frame))
             else:
-                print(formatter.format(frame, dispose).encode('utf-8'))
+                print(formatter.format(frame).encode('utf-8'))
             
         except NotImplementedError:
             sys.stderr.write('Animation is not implemented for ' + formatter.__class__.__name__ + '\n')
