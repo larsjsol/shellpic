@@ -30,8 +30,11 @@ class Frame(object):
     def scale(self, width, height):
         self.image = shellpic.scale(self.image, width, height)
         if self._dispose:
-            self._dispose = shellpic.scale(self._dispose, width, height)
-
+            try:
+                self._dispose = shellpic.scale(self._dispose, width, height)
+            except ValueError:
+                # how is this possible? This exception should be cought in scale()
+                pass # FIXME do something smart
 
     def load(self):
         width, height = self.image.size
