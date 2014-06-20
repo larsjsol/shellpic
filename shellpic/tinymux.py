@@ -57,4 +57,4 @@ class Tinymux(Formatter):
         if r == 0 and g == 0 and b == 0:
             return "%Xn%x<0 0 0>";
         else:
-            return "%X<"+`r`+" "+`g`+" "+`b`+">"+"%x<"+`r`+" "+`g`+" "+`b`+">";
+            return "%X<"+str(r)+" "+str(g)+" "+str(b)+">"+"%x<"+str(r)+" "+str(g)+" "+str(b)+">";
