@@ -12,6 +12,7 @@ from .formatter import *
 from .shell import *
 from .irc import *
 from .nuts import *
+from .tinymux import *
 
 import PIL
 from collections import Sequence
