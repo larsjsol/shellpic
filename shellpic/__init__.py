@@ -17,7 +17,7 @@ from .tinymux import *
 import PIL
 from collections import Sequence
 
-VERSION = "1.4.1"
+VERSION = "1.5"
 
 def scale(image, width, height):
     """
