@@ -24,17 +24,16 @@ class Frame(object):
 
         self.image = image.copy()
 
+        self.width = 0
+        self.height = 0
+
     def __getitem__(self, key):
         return self.pixels[key]
 
     def scale(self, width, height):
         self.image = shellpic.scale(self.image, width, height)
         if self._dispose:
-            try:
-                self._dispose = shellpic.scale(self._dispose, width, height)
-            except ValueError:
-                # how is this possible? This exception should be cought in scale()
-                pass # FIXME do something smart
+            self._dispose = shellpic.scale(self._dispose, width, height)
 
     def load(self):
         width, height = self.image.size
@@ -65,6 +64,9 @@ class Frame(object):
             for x in range(width):
                 self.pixels[x].append((0, 0, 0, 255))
 
+        self.width = width
+        self.height = height
+
 
     def convert_colors(self, converter):
         if not self.pixels:
@@ -74,4 +76,3 @@ class Frame(object):
         for x in range(width):
             for y in range(height):
                 self.pixels[x][y] = converter(*self.pixels[x][y])
-
