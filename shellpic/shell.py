@@ -210,19 +210,13 @@ class Shell(shellpic.Formatter):
         # convert the frame from RGBA to our colorspace
         frame.convert_colors(self.color_value)
 
-        curs_x = -1
-        curs_y = -1
         # draw the image
         for y in range(0, height - 1, 2):
             for x in range(0, width):
                 self.update_visible_pixels(x, y)
                 if self.need_repaint(x, y):
-                    # dont vaste chars moving the cursor if it's already in the right position
-                    #if x != curs_x + 1 or y != curs_y:
                     file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.color_string(frame[x][y], frame[x][y + 1]))
-                curs_x = x + 1
-                curs_y = y
 
         file_str.write(self.move_cursor(width, padded_height // 2))
         file_str.write(chr(27) + u"[0m")
