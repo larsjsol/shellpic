@@ -17,6 +17,7 @@ from .nuts import *
 
 import PIL
 from collections import Sequence
+import inspect
 
 VERSION = "1.4.1"
 
@@ -35,12 +36,16 @@ def scale(image, width, height):
         scaleheight = ((height - 1) * 2) / imgheight
     scale = min(scaleheight, scalewidth)
 
-    try:
+    # ugh! This is horrible
+    # GifImagePlugin creates a ImageingCore object for the dispose if the gif
+    # has disposal method 'background', but it uses an Image object if the
+    # disposal method is 'prevoius frame'.
+    # To make matters worse I can't figure out where this class is defined which
+    # makes it hard to detect it in a sane way.
+    if hasattr(image, "__class__") and image.__class__.__name__ == "ImagingCore":
+        return PIL.Image.new("RGBA", (int(imgwidth * scale), int(imgheight * scale)), (0, 0, 0, 255))
+    else:
         return image.resize((int(imgwidth * scale), int(imgheight * scale)), PIL.Image.ANTIALIAS)
-    except ValueError:
-        # the above sometimes fails with "ValueError: unknown filter"
-        return image.resize((int(imgwidth * scale), int(imgheight * scale)))
-
 
 def ensure_rgb(palette, pixel):
     """

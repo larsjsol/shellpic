@@ -61,7 +61,7 @@ def main():
     dimensions = formatter.dimensions()
 
     # load the image
-    if args.image == '-':
+    if args.image == u'-':
         # we need to copy the entire image to a buffer as PIL likes to seek()
         buf = io.StringIO()
         buf.write(sys.stdin.read())

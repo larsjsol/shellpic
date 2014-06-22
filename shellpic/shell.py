@@ -184,16 +184,14 @@ class Shell(shellpic.Formatter):
     def format(self, frame):
         self.frame = frame
 
-        file_str = io.StringIO()
+        # convert the frame from RGBA to our colorspace
+        frame.convert_colors(self.color_value)
 
-        width, height = frame.image.size
-        # since we put two pixels on top of each other in each character position
-        # we must add a row for images with a odd numbered height
-        padded_height = height if height % 2 == 0 else height + 1
+        file_str = io.StringIO()
 
         if not self._prev_frame:
             # create some empty space to draw on
-            file_str.write(u'\n' * (padded_height // 2))
+            file_str.write(u'\n' * (frame.height // 2))
 
             # find out where we shold put the top left pixel if we are
             # in a terminal. Just use (0, 0) if we are piping to or
@@ -201,24 +199,22 @@ class Shell(shellpic.Formatter):
             if os.isatty(sys.stdin.fileno()) and os.isatty(sys.stdout.fileno()):
                 x, y = self.probe_cursor_pos()
                 _, term_height = self.dimensions()
-                if y + (padded_height // 2) > term_height:
-                    adjust = (y + (padded_height // 2)) - term_height
+                if y + (frame.height // 2) > term_height:
+                    adjust = (y + (frame.height // 2)) - term_height
                     self._origin = x, y - adjust
                 else:
                     self._origin = x, y
 
-        # convert the frame from RGBA to our colorspace
-        frame.convert_colors(self.color_value)
 
         # draw the image
-        for y in range(0, height - 1, 2):
-            for x in range(0, width):
+        for y in range(0, frame.height, 2):
+            for x in range(0, frame.width):
                 self.update_visible_pixels(x, y)
                 if self.need_repaint(x, y):
                     file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.color_string(frame[x][y], frame[x][y + 1]))
 
-        file_str.write(self.move_cursor(width, padded_height // 2))
+        file_str.write(self.move_cursor(frame.width, frame.height // 2))
         file_str.write(chr(27) + u"[0m")
 
         self._prev_frame = frame # keep the current frame in case we need it as background
