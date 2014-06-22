@@ -42,6 +42,7 @@ class Shell(shellpic.Formatter):
         super(Shell, self).__init__()
         self.frame = None
         self._prev_frame = None
+        self._origin = (0, 0)
 
     @staticmethod
     def dimensions():
@@ -99,11 +100,11 @@ class Shell(shellpic.Formatter):
             termios.tcsetattr(sys.stdin, termios.TCSANOW, old_attrs)
             termios.tcsetattr(sys.stdout, termios.TCSANOW, old_attrs)
 
-        return [int(x) - 1, int(y)]
+        return [int(x), int(y)]
 
     def move_cursor(self,  pos_x, pos_y):
         return u"{0}[{1};{2}f".format(chr(27), self._origin[1] + pos_y,
-                                  self._origin[0] + pos_x)
+                                      self._origin[0] + pos_x)
 
     @staticmethod
     def save_cursor():
@@ -152,20 +153,28 @@ class Shell(shellpic.Formatter):
         if not self._prev_frame:
             return True
 
-        # redraw if any pixels have different color
-        if self.frame.pixels[x][y] != self._prev_frame.pixels[x][y]:
-            return True
-        elif self.frame.pixels[x][y + 1] != self._prev_frame.pixels[x][y + 1]:
-            return True
-        else:
+        if self.frame[x][y] == self._prev_frame[x][y] and self.frame[x][y + 1] == self._prev_frame[x][y + 1]:
             return False
+        else:
+            return True
 
-    def update_visible_pixel(self, x, y):
+    def update_visible_pixels(self, x, y):
+        """
+        Replace transparent pixels with the actual color for
+        frame[x][y] and frame[x][y + 1].
+        """
+
         if self.frame[x][y] == None:
             if not self._prev_frame:
                 self.frame[x][y] = self.color_value(0, 0, 0, 255) # fall back to black if no information is present
             else:
                 self.frame[x][y] = self._prev_frame[x][y]
+
+        if self.frame[x][y + 1] == None:
+            if not self._prev_frame:
+                self.frame[x][y + 1] = self.color_value(0, 0, 0, 255) # fall back to black if no information is present
+            else:
+                self.frame[x][y + 1] = self._prev_frame[x][y + 1]
 
     @staticmethod
     def color_value(r, g, b, a=255):
@@ -206,15 +215,14 @@ class Shell(shellpic.Formatter):
         # draw the image
         for y in range(0, height - 1, 2):
             for x in range(0, width):
-                self.update_visible_pixel(x, y)
-                self.update_visible_pixel(x, y + 1)
+                self.update_visible_pixels(x, y)
                 if self.need_repaint(x, y):
                     # dont vaste chars moving the cursor if it's already in the right position
-                    if x != curs_x or y != curs_y:
-                        file_str.write(self.move_cursor(x, y // 2))
+                    #if x != curs_x + 1 or y != curs_y:
+                    file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.color_string(frame[x][y], frame[x][y + 1]))
-                    curs_x = x + 1
-                    curs_y = y
+                curs_x = x + 1
+                curs_y = y
 
         file_str.write(self.move_cursor(width, padded_height // 2))
         file_str.write(chr(27) + u"[0m")
@@ -233,11 +241,11 @@ class Shell8Bit(Shell):
         super(Shell8Bit, self).__init__()
 
     @staticmethod
-    @memoize
     def color_string(bgcolor, fgcolor):
-        return u"{0}[48;5;{1};38;5;{2}m{3}▄ ".format(chr(27), bgcolor, fgcolor, chr(8))
+        return u"{0}[48;5;{1};38;5;{2}m{3}▄".format(chr(27), bgcolor, fgcolor, chr(8))
 
     @staticmethod
+    @memoize
     def color_value(r, g, b, a=255):
         """
         Return the terminal color value corresponding to the r, g, b,
@@ -273,9 +281,8 @@ class Shell24Bit(Shell):
 
 
     @staticmethod
-    @memoize
     def color_string(bgcolor, fgcolor):
-        return u"{0}[48;2;{1};{2};{3};38;2;{4};{5};{6}m{7}▄ ".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
+        return u"{0}[48;2;{1};{2};{3};38;2;{4};{5};{6}m{7}▄".format(chr(27), bgcolor[0], bgcolor[1], bgcolor[2],
                                                                      fgcolor[0], fgcolor[1], fgcolor[2], chr(8))
 
 class Shell4Bit(Shell):
@@ -325,6 +332,7 @@ class Shell4Bit(Shell):
         super(Shell4Bit, self).__init__()
 
     @staticmethod
+    @memoize
     def color_value(r, g, b, a=255):
         if not a:
             return None
@@ -340,6 +348,5 @@ class Shell4Bit(Shell):
         return code
 
     @staticmethod
-    @memoize
     def color_string(bgcolor, fgcolor):
-        return u"{0}[{1};{2}m▄ ".format(chr(27), bgcolor + 10, fgcolor)
+        return u"{0}[{1};{2}m▄".format(chr(27), bgcolor + 10, fgcolor)
