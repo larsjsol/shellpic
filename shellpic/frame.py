@@ -59,20 +59,20 @@ class Frame(object):
                         rgba = (0, 0, 0, 0)
                 self.pixels[x][y] = rgba
 
+        self.width = width
+        self.height = height
+
         # make sure that we have an even nuber of rows
         if height % 2 != 0:
             for x in range(width):
                 self.pixels[x].append((0, 0, 0, 255))
-
-        self.width = width
-        self.height = height
+            self.height += 1
 
 
     def convert_colors(self, converter):
         if not self.pixels:
             self.load()
 
-        width, height = self.image.size
-        for x in range(width):
-            for y in range(height):
+        for x in range(self.width):
+            for y in range(self.height):
                 self.pixels[x][y] = converter(*self.pixels[x][y])
