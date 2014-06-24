@@ -158,24 +158,6 @@ class Shell(shellpic.Formatter):
         else:
             return True
 
-    def update_visible_pixels(self, x, y):
-        """
-        Replace transparent pixels with the actual color for
-        frame[x][y] and frame[x][y + 1].
-        """
-
-        if self.frame[x][y] == None:
-            if not self._prev_frame:
-                self.frame[x][y] = self.color_value(0, 0, 0, 255) # fall back to black if no information is present
-            else:
-                self.frame[x][y] = self._prev_frame[x][y]
-
-        if self.frame[x][y + 1] == None:
-            if not self._prev_frame:
-                self.frame[x][y + 1] = self.color_value(0, 0, 0, 255) # fall back to black if no information is present
-            else:
-                self.frame[x][y + 1] = self._prev_frame[x][y + 1]
-
     @staticmethod
     def color_value(r, g, b, a=255):
         raise NotImplementedError()
@@ -183,10 +165,6 @@ class Shell(shellpic.Formatter):
 
     def format(self, frame):
         self.frame = frame
-
-        # convert the frame from RGBA to our colorspace
-        frame.convert_colors(self.color_value)
-
         file_str = io.StringIO()
 
         if not self._prev_frame:
@@ -209,7 +187,6 @@ class Shell(shellpic.Formatter):
         # draw the image
         for y in range(0, frame.height, 2):
             for x in range(0, frame.width):
-                self.update_visible_pixels(x, y)
                 if self.need_repaint(x, y):
                     file_str.write(self.move_cursor(x, y // 2))
                     file_str.write(self.color_string(frame[x][y], frame[x][y + 1]))
@@ -243,9 +220,6 @@ class Shell8Bit(Shell):
 
         The returned value can be passed to colorcode().
         """
-        if not a:
-            return None
-
         # basically the opposite of what is done in 256colres.pl from the xterm source
         r = (r - 55) // 40 if r > 55 else 0
         g = (g - 55) // 40 if g > 55 else 0
@@ -264,10 +238,7 @@ class Shell24Bit(Shell):
 
     @staticmethod
     def color_value(r, g, b, a=255):
-        if not a:
-            return None
-        else:
-            return (r, g, b)
+        return (r, g, b)
 
 
     @staticmethod
@@ -324,8 +295,6 @@ class Shell4Bit(Shell):
     @staticmethod
     @memoize
     def color_value(r, g, b, a=255):
-        if not a:
-            return None
 
         def distance(a, b):
             return sum([pow(x - y, 2) for x, y in zip(a, b)])
