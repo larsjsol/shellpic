@@ -52,73 +52,40 @@ def main():
     args = parser.parse_args()    
 
 
-
-
     # create the right kind of 'Formatter'
     if args.formatter_class:
         formatter = args.formatter_class()
     else:
         formatter = Shell8Bit()
 
-    dimensions = formatter.dimensions()
-
-    # load the image
-    if args.image == u'-':
-        # we need to copy the entire image to a buffer as PIL likes to seek()
-        buf = io.StringIO()
-        buf.write(sys.stdin.read())
-        buf.seek(0)
-        img = Image.open(buf)
-        img.load() 
-    else:
-        try:
-            img = Image.open(args.image)
-        except IOError as excp:
-            sys.stderr.write(str(excp) + '\n')
-            exit(1)
-
-    # grab what we need from the info-property, as some transformations might change them
-    if 'background' in img.info:
-        formatter.bgcolor = shellpic.ensure_rgb(img.palette, img.info['background'])
-    if 'duration' in img.info:
-        frame_delay = img.info['duration']
-    else:
-        frame_delay = 0
-
-    # extract the frames for animation
-    frames = [Frame(img)]
-    if args.animate or args.loop:
-        while True:
-            try:
-                img.seek(img.tell() + 1)
-                frames.append(Frame(img))
-            except EOFError:
-                break
+    
+    anim = Animation(args.image, args.animate or args.loop)
 
     # scale it to fit the terminal
     if not args.no_scale:
+        dimensions = formatter.dimensions()
         if args.scale_x:
             dimensions = [args.scale_x[0], dimensions[1]]
         if args.scale_y:
-            dimensions = [dimensions[0], args.scale_y[0]]
-        
-        for f in frames:
-            f.scale(*dimensions)
+            dimensions = [dimensions[0], args.scale_y[0]]            
+        anim.scale(*dimensions)
 
+    # convert the frame from RGBA to a colorspace useful for our formatter
+    anim.convert_colors(formatter.color_value)
 
     # print the image as an animation
     if args.animate or args.loop:
         try:
-            delay = frame_delay / 1000
             while True:
-                for frame in frames:
+                for frame in anim.frames:
                     start = time.time()
                     if sys.version_info[0] == 3:
                         print(formatter.format(frame), end='')
                     else:
                         print(formatter.format(frame).encode('utf-8'), end='')
+                    sys.stdout.flush()
                     done = time.time()
-                    time.sleep(max(0.0 , delay - (done - start)))
+                    time.sleep(max(0.0 , anim.delay - (done - start)))
                 if not args.loop:
                     print()
                     break
@@ -134,9 +101,9 @@ def main():
     else:
         # or print the result to STDOUT        
         if sys.version_info[0] == 3:
-            print(formatter.format(frames[0]))
+            print(formatter.format(anim.frames[0]))
         else:
-            print(formatter.format(frames[0]).encode('utf-8'))
+            print(formatter.format(anim.frames[0]).encode('utf-8'))
 
 
 if __name__ == "__main__":

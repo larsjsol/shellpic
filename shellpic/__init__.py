@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 from __future__ import division
 
-from .frame import *
+from .animation import *
 from .formatter import *
 from .shell import *
 from .irc import *
@@ -18,7 +18,7 @@ from .tinymux import *
 
 import PIL
 from collections import Sequence
-import inspect
+
 
 VERSION = "1.5"
 
