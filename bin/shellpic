@@ -85,7 +85,7 @@ def main():
                         print(formatter.format(frame).encode('utf-8'), end='')
                     sys.stdout.flush()
                     done = time.time()
-                    time.sleep(max(0.0 , anim.delay - (done - start)))
+                    time.sleep(max(0.0 , frame.delay - (done - start)))
                 if not args.loop:
                     print()
                     break
