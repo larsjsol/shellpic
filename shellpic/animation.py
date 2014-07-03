@@ -8,14 +8,11 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
+from __future__ import division
 
 import shellpic
 
-import subprocess
-import tempfile
-import os
-import shutil
-import re
+import mimetypes
 from PIL import Image
 
 
@@ -25,33 +22,25 @@ class Animation(object):
         super(Animation, self).__init__()
         self.frames = []
 
-        img = Image.open(filename)
-        if 'duration' in img.info:
-            self.delay = img.info['duration'] / 1000
-        else:
-            self.delay = 0.5
-
+        self.mimetype = mimetypes.guess_type(filename)
 
         if animated:
             self._explode(filename)
         else:
+            img = Image.open(filename)
             self.frames = [Frame(img)]
 
 
     def _explode(self, filename):
-        def framenum(filename):
-            m = re.search(r'\d+', filename)
-            return int(m.group(0))
+        assert(self.mimetype[0] == 'image/gif')
+        img = Image.open(filename)
 
-        #use imagemagick to turn each frame into a single file
-        tmpdir = tempfile.mkdtemp()
-        subprocess.call(["convert", "-coalesce", filename, os.path.join(tmpdir, "out.png")])
-        files = os.listdir(tmpdir)
-        files.sort(key=framenum)
-        for f in files:
-            img = Image.open(os.path.join(tmpdir, f))
-            self.frames.append(Frame(img))
-        shutil.rmtree(tmpdir)
+        try:
+            while True:
+                self.frames.append(Frame(img))
+                img.seek(img.tell() + 1)
+        except EOFError:
+            pass
 
     def scale(self, width, height):
         for f in self.frames:
@@ -66,41 +55,54 @@ class Frame(object):
 
     def __init__(self, image):
         super(Frame, self).__init__()
-        self.pixels = None
-        self.image = image
+
+        self._pixels = None
 
         self.width, self.height = image.size
 
+        if 'duration' in image.info:
+            self.delay = image.info['duration'] / 1000
+        else:
+            self.delay = 0.5
+
+        self.image = image.copy()
+
     def __getitem__(self, key):
-        return self.pixels[key]
+        if not self._pixels:
+            self.load()
+
+        return self._pixels[key]
 
     def scale(self, width, height):
         self.image = shellpic.scale(self.image, width, height)
+        self.width, self.height = self.image.size
+        self._pixels = None
 
     def load(self):
         width, height = self.image.size
 
         self.image = self.image.convert('RGBA')
-        self.pixels = shellpic.pixels(self.image)
+        self._pixels = shellpic.pixels(self.image)
 
         self.width = width
         self.height = height
 
         for y in range(height):
             for x in range(width):
-                if self.pixels[x][y][3] != 255:
-                    self.pixels[x][y] = [0, 0, 0, 255]
+                # use black as background color
+                if self._pixels[x][y][3] != 255:
+                    self._pixels[x][y] = [0, 0, 0, 255]
 
         # make sure that we have an even nuber of rows
         if height % 2 != 0:
             for x in range(width):
-                self.pixels[x].append([0, 0, 0, 255])
+                self._pixels[x].append([0, 0, 0, 255])
             self.height += 1
 
     def convert_colors(self, converter):
-        if not self.pixels:
+        if not self._pixels:
             self.load()
 
         for x in range(self.width):
             for y in range(self.height):
-                self.pixels[x][y] = converter(*self.pixels[x][y])
+                self._pixels[x][y] = converter(*self._pixels[x][y])
