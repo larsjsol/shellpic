@@ -14,9 +14,20 @@ from .shell import *
 from .irc import *
 from .nuts import *
 
-
 import PIL
 from collections import Sequence
+
+# there is a fix set for Pillow-2.6 that fixes a bug in the dispose
+# handling for animated GIF. We monkey patch it here until that
+# version is released.
+from PIL import GifImagePlugin
+from .GifImagePlugin import GifImageFile, _accept, _save
+
+PIL.Image.register_open(GifImageFile.format, GifImageFile, _accept)
+PIL.Image.register_save(GifImageFile.format, _save)
+PIL.Image.register_extension(GifImageFile.format, ".gif")
+PIL.Image.register_mime(GifImageFile.format, "image/gif")
+
 
 
 VERSION = "1.4.1"

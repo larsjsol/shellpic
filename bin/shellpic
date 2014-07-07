@@ -14,9 +14,9 @@ import sys
 import io
 import time
 
-from PIL import Image
-
 from shellpic import *
+
+from PIL import Image
 
 def main():    
     # parse command line parameters
