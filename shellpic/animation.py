@@ -65,6 +65,12 @@ class Frame(object):
         else:
             self.delay = 0.5
 
+        if 'background' in image.info:
+            self.background = shellpic.ensure_rgb(image.palette, image.info['background'])
+            self.background.append(255) # should not be necessary...
+        else:
+            self.background = [0, 0, 0, 255]
+
         self.image = image.copy()
 
     def __getitem__(self, key):
@@ -91,12 +97,12 @@ class Frame(object):
             for x in range(width):
                 # use black as background color
                 if self._pixels[x][y][3] != 255:
-                    self._pixels[x][y] = [0, 0, 0, 255]
+                    self._pixels[x][y] = self.background
 
         # make sure that we have an even nuber of rows
         if height % 2 != 0:
             for x in range(width):
-                self._pixels[x].append([0, 0, 0, 255])
+                self._pixels[x].append(self.background)
             self.height += 1
 
     def convert_colors(self, converter):

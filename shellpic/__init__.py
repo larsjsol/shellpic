@@ -63,10 +63,12 @@ def palette_lookup(palette, index):
     """
     Return the rgb value stored in the palette at the supplied index.
     """
+
     if sys.version_info[0] == 3:
-        return palette.palette[3 * index], palette.palette[(3 * index) + 1], palette.palette[(3 * index) + 2]
+        rgb = palette.palette[3 * index], palette.palette[(3 * index) + 1], palette.palette[(3 * index) + 2]
     else:
-        return ord(palette.palette[3 * index]), ord(palette.palette[(3 * index) + 1]), ord(palette.palette[(3 * index) + 2])
+        rgb = ord(palette.palette[3 * index]), ord(palette.palette[(3 * index) + 1]), ord(palette.palette[(3 * index) + 2])
+    return list(rgb)
 
 
 def pixels(image):
