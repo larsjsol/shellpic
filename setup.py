@@ -10,7 +10,7 @@ import pkg_resources
 
 setup(
     name='Shellpic',
-    version='1.5',
+    version='1.6',
     author='Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],
@@ -23,7 +23,7 @@ setup(
         "Pillow",
     ],
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX",

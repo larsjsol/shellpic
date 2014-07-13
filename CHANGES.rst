@@ -1,6 +1,12 @@
 Version History
 ===============
 
+v1.6, 2014-07-13
+  * Use correct background color for gifs.
+  * Use per-fame delay time for gifs
+  * workaround for dispose problem in pillow
+  * refactoring of the animation code (old bugs replaced by new)
+
 v1.5, 2014-06-21
   * Support for TinyMux (``--tinymux``) [marando]
 
