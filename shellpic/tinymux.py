@@ -25,7 +25,6 @@ class Tinymux(Formatter):
         return (70, 70) # maxsize allowed for object descriptions
 
     def format(self, frame):
-
         file_str = io.StringIO()
 
         file_str.write(u"%Xn%r")

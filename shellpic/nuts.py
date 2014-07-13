@@ -87,10 +87,6 @@ class Nuts(Formatter):
         return (78, 78) # guesstimation of how much room is normally available in a chatwindow
 
     def format(self, frame):
-        def off(x, y):
-            """ the string offset for a coordinate """
-            return (y * frame.width) + x
-
         file_str = io.StringIO()
 
         for y in range(0, frame.height, 2):
