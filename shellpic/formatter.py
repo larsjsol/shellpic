@@ -18,7 +18,7 @@ class Formatter(object):
         super(Formatter, self).__init__()
         self._origin = (0, 0) # cursor position where we put the upper left pixel
 
-    def format(self, image, dispose=None):
+    def format(self, frame):
         """
         Convert image to a string and return it. Get background color
         from dispose for transparent pixels.
@@ -61,5 +61,14 @@ class Formatter(object):
         """
         Return a string containing a command to clear the drawing
         area.
+        """
+        raise NotImplementedError()
+
+
+    @classmethod
+    def color_code(cls, r, g, b, a=255):
+        """
+        Convert the given color into the colorspace used by the
+        formatter.
         """
         raise NotImplementedError()

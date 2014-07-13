@@ -62,34 +62,21 @@ class Irc(Formatter):
         super(Irc, self).__init__()
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         return (50, 50) # guesstimation of how much room is normally available in a chatwindow
 
-    def format(self, image, dispose=None):
-        def off(x, y):
-            """ the string offset for a coordinate """
-            return (y * width) + x
-
-        assert image.mode == 'RGBA'
-
-        width, height = image.size
-        pixels = [self.color(*p) for p in image.getdata()]
-
+    def format(self, frame):
         file_str = io.StringIO()
 
-        yrange = height if height % 2 == 0 else height - 1
-        for y in range(0, yrange, 2):
-            for x in range(0, width):
-                file_str.write(chr(3) + str(pixels[off(x, y + 1)]) + u"," + str(pixels[off(x, y)]) + u"▄")
+        for y in range(0, frame.height, 2):
+            for x in range(0, frame.width):
+                file_str.write(chr(3) + str(frame[x][y + 1]) + u"," + str(frame[x][y]) + u"▄")
             file_str.write(chr(3) + u"\n")
-        if height % 2 != 0:
-            for x in range(0, width):
-                file_str.write(chr(3) + "1," + str(pixels[off(x, height - 1)]) + u"▄")
-            file_str.write(chr(3) + u"\n")
+
         return file_str.getvalue()
 
     @classmethod
-    def color(cls, r, g, b, a):
+    def color_value(cls, r, g, b, a=255):
         # ugh, there is probably better way of doing this, but i can't make heads or tails of
         # the PIL documentation
         def distance(a, b):
