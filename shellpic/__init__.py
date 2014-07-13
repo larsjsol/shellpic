@@ -13,6 +13,7 @@ from .formatter import *
 from .shell import *
 from .irc import *
 from .nuts import *
+from .tinymux import *
 
 import PIL
 from collections import Sequence
@@ -28,9 +29,7 @@ PIL.Image.register_save(GifImageFile.format, _save)
 PIL.Image.register_extension(GifImageFile.format, ".gif")
 PIL.Image.register_mime(GifImageFile.format, "image/gif")
 
-
-
-VERSION = "1.4.1"
+VERSION = "1.5"
 
 def scale(image, width, height):
     """

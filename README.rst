@@ -32,6 +32,9 @@ in konsole:
     .. image:: https://raw.github.com/larsjsol/shellpic/master/img/nuts.png
         :alt: Farnsworth and imp displayed in 16 colors in a NUTS talker
 
+The ``--tinymux``-switch will also do that, generating 256 color images for 
+TinyMUX servers.
+
 Use the ``--animate`` (show the animation once, then exit) or
 ``--loop`` (animate and loop forever) to animate gifs. There is a
 noticable difference between between terminals of how smooth 

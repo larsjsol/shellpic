@@ -10,7 +10,7 @@ import pkg_resources
 
 setup(
     name='Shellpic',
-    version='1.4.1',
+    version='1.5',
     author='Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],

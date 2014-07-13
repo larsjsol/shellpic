@@ -1,6 +1,9 @@
 Version History
 ===============
 
+v1.5, 2014-06-21
+  * Support for TinyMux (``--tinymux``)
+
 v1.4.1, 2014-06-09
   * Support for Python 3.3 and 3.4.
 
