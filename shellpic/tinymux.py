@@ -21,7 +21,7 @@ class Tinymux(Formatter):
         super(Tinymux, self).__init__()
 
     @staticmethod
-    def dimentions():
+    def dimensions():
         return (70, 70) # maxsize allowed for object descriptions
 
     def format(self, frame):
@@ -33,8 +33,10 @@ class Tinymux(Formatter):
                 if x > 0 and frame[x][y] == frame[x - 1][y]:
                     file_str.write(u".")
                 else:
-                    file_str.write(str(frame[x][y] + u"."))
+                    file_str.write(str(frame[x][y]) + u".")
             file_str.write(u"%Xn%r")
+        file_str.write(u"%Xn%r")
+
         return file_str.getvalue()
 
     @classmethod

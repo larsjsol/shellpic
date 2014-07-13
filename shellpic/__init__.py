@@ -29,7 +29,7 @@ PIL.Image.register_save(GifImageFile.format, _save)
 PIL.Image.register_extension(GifImageFile.format, ".gif")
 PIL.Image.register_mime(GifImageFile.format, "image/gif")
 
-VERSION = "1.5"
+VERSION = "1.6"
 
 def scale(image, width, height):
     """
