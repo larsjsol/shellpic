@@ -8,12 +8,14 @@
 from __future__ import absolute_import
 from __future__ import division
 
-from .animation import *
-from .formatter import *
-from .shell import *
-from .irc import *
-from .nuts import *
-from .tinymux import *
+
+#pylint: disable=W0401
+from shellpic.animation import *
+from shellpic.formatter import *
+from shellpic.shell import *
+from shellpic.irc import *
+from shellpic.nuts import *
+from shellpic.tinymux import *
 
 import PIL
 from collections import Sequence
@@ -22,7 +24,7 @@ from collections import Sequence
 # handling for animated GIF. We monkey patch it here until that
 # version is released.
 from PIL import GifImagePlugin
-from .GifImagePlugin import GifImageFile, _accept, _save
+from shellpic.GifImagePlugin import GifImageFile, _accept, _save
 
 PIL.Image.register_open(GifImageFile.format, GifImageFile, _accept)
 PIL.Image.register_save(GifImageFile.format, _save)

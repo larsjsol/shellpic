@@ -5,6 +5,7 @@
 # Lars Jørgen Solberg <supersolberg@gmail.com> 2014
 #
 
+#pylint: disable=R0921
 class Formatter(object):
     """
     A Formatter creates a string of unicode characters and escape
