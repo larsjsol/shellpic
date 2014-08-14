@@ -20,8 +20,7 @@ class Formatter(object):
 
     def format(self, frame):
         """
-        Convert image to a string and return it. Get background color
-        from dispose for transparent pixels.
+        Convert image to a string and return it.
         """
         raise NotImplementedError()
 
@@ -35,8 +34,7 @@ class Formatter(object):
 
     def move_cursor(self, pos_x, pos_y):
         """
-        Return a string containing the command to move the cursor to a
-        position.
+        Return a the command to move the cursor to a position as a string.
         """
         raise NotImplementedError()
 
