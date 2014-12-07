@@ -6,7 +6,6 @@
 #
 
 from distutils.core import setup
-import pkg_resources
 
 setup(
     name='Shellpic',
