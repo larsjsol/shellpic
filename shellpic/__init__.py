@@ -20,7 +20,7 @@ from shellpic.tinymux import *
 import PIL
 from collections import Sequence
 
-VERSION = "1.6"
+VERSION = "1.6.1"
 
 def scale(image, width, height):
     """

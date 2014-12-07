@@ -1,6 +1,10 @@
 Version History
 ===============
 
+v1.6.1, 2014-12-07
+  * Fix issue 6: don't crash if the background color is not present in the palette 
+  * Depend on Pillow 2.6, remove dispose workaround
+
 v1.6, 2014-07-13
   * Use correct background color for gifs.
   * Use per-fame delay time for gifs
@@ -14,7 +18,7 @@ v1.4.1, 2014-06-09
   * Support for Python 3.3 and 3.4
 
 v1.4, 2014-06-09
-  * Support for NUTS talkers (``--nuts`` [marando]
+  * Support for NUTS talkers (``--nuts``) [marando]
   * Support for Python 2.6
 
 v1.3, 2014-04-06
