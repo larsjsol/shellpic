@@ -20,7 +20,7 @@ setup(
     description='Display images using escape codes',
     long_description=open('README.rst').read(),
     install_requires=[
-        "Pillow",
+        "Pillow >= 2.6",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
