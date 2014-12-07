@@ -35,6 +35,8 @@ compare_output "shellpic --scale-x 20 --scale-y 20 --shell8 --animate ../img/imp
 compare_output "shellpic --scale-x 20 --scale-y 20 --irc ../img/Lenna.png" "output/lenna_irc.txt"
 compare_output "shellpic --scale-x 20 --scale-y 20 --nuts ../img/Lenna.png" "output/lenna_nuts.txt"
 compare_output "shellpic --scale-x 20 --scale-y 20 --tinymux ../img/Lenna.png" "output/lenna_tinymux.txt"
+# issue 6
+compare_output "shellpic --scale-x 20 --scale-y 20 ../img/icon_thankyou.gif" "output/icon_thankyou.txt"
 
 if ((TESTS_OK == TESTS))
 then
