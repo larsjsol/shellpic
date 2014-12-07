@@ -13,6 +13,7 @@ from __future__ import division
 import shellpic
 
 import mimetypes
+import sys
 from PIL import Image
 
 
@@ -66,8 +67,13 @@ class Frame(object):
             self.delay = 0.5
 
         if 'background' in image.info:
-            self.background = shellpic.ensure_rgb(image.palette, image.info['background'])
-            self.background.append(255) # should not be necessary...
+            try:
+                self.background = shellpic.ensure_rgb(image.palette, image.info['background'])
+                self.background.append(255) # set the alpha component, should not be necessary...
+            except IndexError:
+                # im not sure if this shuld be silent or not...
+                sys.stderr.write("WARNING: Could not find background color in the image palette\n")
+                self.background = [0, 0, 0, 255]
         else:
             self.background = [0, 0, 0, 255]
 
