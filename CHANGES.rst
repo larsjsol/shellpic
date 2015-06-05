@@ -12,13 +12,13 @@ v1.6, 2014-07-13
   * refactoring of the animation code (old bugs replaced by new)
 
 v1.5, 2014-06-21
-  * Support for TinyMux (``--tinymux``) [marando]
+  * Support for TinyMux (``--tinymux``) [marado]
 
 v1.4.1, 2014-06-09
   * Support for Python 3.3 and 3.4
 
 v1.4, 2014-06-09
-  * Support for NUTS talkers (``--nuts``) [marando]
+  * Support for NUTS talkers (``--nuts``) [marado]
   * Support for Python 2.6
 
 v1.3, 2014-04-06
