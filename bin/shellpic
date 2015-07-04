@@ -15,10 +15,10 @@ import time
 
 try:
     # python2
-    from cStringIO import StringIO
+    import cStringIO
 except ImportError:
     # python3
-    from io import StringIO
+    import io
 
 from shellpic import *
 
@@ -65,11 +65,13 @@ def main():
         formatter = Shell8Bit()
 
     if args.image == "-":
-        # make stdin binary
         if sys.version_info[0] == 3:
-            sys.stdin = sys.stdin.detach()
+            sys.stdin = sys.stdin.detach() # make stdin binary
+            buf = io.BytesIO()
+        else:
+            buf = cStringIO.StringIO()
+
         # we need to copy the entire image to a buffer as PIL likes to seek()
-        buf = StringIO()
         buf.write(sys.stdin.read())
         buf.seek(0)
         anim = Animation(buf, args.animate or args.loop)
