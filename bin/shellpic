@@ -65,6 +65,9 @@ def main():
         formatter = Shell8Bit()
 
     if args.image == "-":
+        # make stdin binary
+        if sys.version_info[0] == 3:
+            sys.stdin = sys.stdin.detach()
         # we need to copy the entire image to a buffer as PIL likes to seek()
         buf = StringIO()
         buf.write(sys.stdin.read())
