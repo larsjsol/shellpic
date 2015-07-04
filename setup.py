@@ -9,7 +9,7 @@ from distutils.core import setup
 
 setup(
     name='Shellpic',
-    version='1.6.1',
+    version='1.6.2',
     author='Lars Jørgen Solberg',
     author_email='supersolberg@gmail.com',
     packages=['shellpic'],

@@ -1,6 +1,9 @@
 Version History
 ===============
 
+v1.6.2, 2015-07-04
+ * Fix issue 10: reading images from stdin not working
+
 v1.6.1, 2014-12-07
   * Fix issue 6: don't crash if the background color is not present in the palette 
   * Depend on Pillow 2.6, remove dispose workaround
