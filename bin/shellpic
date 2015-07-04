@@ -12,6 +12,7 @@ from __future__ import unicode_literals
 import argparse
 import sys
 import time
+import cStringIO
 
 from shellpic import *
 
@@ -58,7 +59,15 @@ def main():
         formatter = Shell8Bit()
 
 
-    anim = Animation(args.image, args.animate or args.loop)
+    if args.image == "-":
+        # we need to copy the entire image to a buffer as PIL likes to seek()
+        buf = cStringIO.StringIO()
+        buf.write(sys.stdin.read())
+        buf.seek(0)
+        anim = Animation(buf, args.animate or args.loop)
+        buf.close()
+    else:
+        anim = Animation(args.image, args.animate or args.loop)
 
     # scale it to fit the terminal
     if not args.no_scale:

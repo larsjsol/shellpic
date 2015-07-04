@@ -23,8 +23,6 @@ class Animation(object):
         super(Animation, self).__init__()
         self.frames = []
 
-        self.mimetype = mimetypes.guess_type(filename)
-
         if animated:
             self._explode(filename)
         else:
@@ -33,7 +31,6 @@ class Animation(object):
 
 
     def _explode(self, filename):
-        assert(self.mimetype[0] == 'image/gif')
         img = Image.open(filename)
 
         try:
