@@ -12,7 +12,13 @@ from __future__ import unicode_literals
 import argparse
 import sys
 import time
-import cStringIO
+
+try:
+    # python2
+    from cStringIO import StringIO
+except ImportError:
+    # python3
+    from io import StringIO
 
 from shellpic import *
 
@@ -58,10 +64,9 @@ def main():
     else:
         formatter = Shell8Bit()
 
-
     if args.image == "-":
         # we need to copy the entire image to a buffer as PIL likes to seek()
-        buf = cStringIO.StringIO()
+        buf = StringIO()
         buf.write(sys.stdin.read())
         buf.seek(0)
         anim = Animation(buf, args.animate or args.loop)
