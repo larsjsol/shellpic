@@ -14,7 +14,7 @@ compare_output() {
     TESTS=$((TESTS+1))
 
     /bin/echo -n "Comparing \"$command\" with $expected_output ... "
-    $command > $tmpfile    
+    eval $command > $tmpfile
     if diff $tmpfile $expected_output > /dev/null; 
     then
         echo "OK!"
@@ -37,6 +37,8 @@ compare_output "shellpic --scale-x 20 --scale-y 20 --nuts ../img/Lenna.png" "out
 compare_output "shellpic --scale-x 20 --scale-y 20 --tinymux ../img/Lenna.png" "output/lenna_tinymux.txt"
 # issue 6
 compare_output "shellpic --scale-x 20 --scale-y 20 ../img/icon_thankyou.gif" "output/icon_thankyou.txt"
+# issue 10
+compare_output "cat ../img/Lenna.png | shellpic --scale-x 20 --scale-y 20 --shell8 -" "output/lenna_shell8.txt"
 
 if ((TESTS_OK == TESTS))
 then
